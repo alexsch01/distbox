@@ -11,4 +11,5 @@ curl -s https://raw.githubusercontent.com/alexsch01/distbox/main/install | sh
 
 ### Commands
 install/replace your distbox - `distbox install`
+
 run your distbox - `distbox`
