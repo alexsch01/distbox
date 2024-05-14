@@ -8,3 +8,7 @@ host system survives when `sudo rm -rf / --no-preserve-root` is run in the distb
 ```
 curl -s https://raw.githubusercontent.com/alexsch01/distbox/main/install | sh
 ```
+
+### Commands
+install/replace your distbox - `distbox install`
+run your distbox - `distbox`
