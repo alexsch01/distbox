@@ -5,7 +5,7 @@ then
 fi
 
 if [ "$1" = "install" ]; then
-    read -r -p "Do you want to install/reset your distbox? [y/N] " response
+    read -r -p "Do you want to install/replace your distbox? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
         exit
     fi
