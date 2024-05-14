@@ -33,7 +33,6 @@ if [ "$1" = "install" ]; then
         --env container=podman \
         --env TERMINFO_DIRS=/usr/share/terminfo:/run/host/usr/share/terminfo \
         --env CONTAINER_ID=my-distbox \
-        --volume /tmp:/tmp:rslave \
         --volume /home/$USER/distbox-home/.local/bin/distrobox-init:/usr/bin/entrypoint:ro \
         --volume /home/$USER/distbox-home/.local/bin/distrobox-export:/usr/bin/distrobox-export:ro \
         --volume /home/$USER/distbox-home/.local/bin/distrobox-host-exec:/usr/bin/distrobox-host-exec:ro \
