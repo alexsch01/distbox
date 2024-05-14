@@ -1,10 +1,10 @@
-OG_path=$(pwd)
-
 if ! command -v rpm-ostree &> /dev/null
 then
     echo "rpm-ostree could not be found"
     exit 1
 fi
+
+OG_path=$(pwd)
 
 if [ "$1" = "install" ]; then
     read -r -p "Do you want to install/replace your distbox? [y/N] " response
