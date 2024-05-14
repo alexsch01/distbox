@@ -1,3 +1,5 @@
+OG_path=$(pwd)
+
 if ! command -v rpm-ostree &> /dev/null
 then
     echo "rpm-ostree could not be found"
@@ -61,9 +63,10 @@ if [ "$1" = "install" ]; then
         --pre-init-hooks '' \
         --additional-packages '' -- ''
 
+    cd /home/$USER
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter --name my-distbox -- sudo chown $USER: /run/user/$(id -u)
+    cd $OG_path
 elif [ "$1" = "" ]; then
-    OG_path=$(pwd)
     cd /home/$USER
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter --name my-distbox
     cd $OG_path
