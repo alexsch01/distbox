@@ -43,7 +43,7 @@ if [ "$1" = "install" ]; then
         --volume /dev/null:/dev/ptmx \
         --volume /sys/fs/selinux \
         --volume /var/log/journal \
-        --volume /run/user/$(id -u):/run/user/$(id -u):ro \
+        --volume /run/user/$(id -u)/wayland-0:/run/user/$(id -u)/wayland-0:ro \
         --volume /etc/hosts:/etc/hosts:ro \
         --volume /etc/resolv.conf:/etc/resolv.conf:ro \
         --volume /etc/hostname:/etc/hostname:ro \
@@ -60,6 +60,8 @@ if [ "$1" = "install" ]; then
         --nvidia 0 \
         --pre-init-hooks '' \
         --additional-packages '' -- ''
+
+    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter --name my-distbox -- sudo chown $USER: /run/user/$(id -u)
 elif [ "$1" = "" ]; then
     OG_path=$(pwd)
     cd /home/$USER
