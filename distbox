@@ -7,7 +7,7 @@ fi
 if [ "$1" = "install" ]; then
     read -r -p "Do you want to install/reset your distbox? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
-            exit
+        exit
     fi
     
     sudo rm -rf ~/distbox-home
@@ -62,8 +62,8 @@ if [ "$1" = "install" ]; then
         --pre-init-hooks '' \
         --additional-packages '' -- ''
 elif [ "$1" = "" ]; then
-        OG_path=$(pwd)
-        cd /home/$USER
-        HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter --name my-distbox
-        cd $OG_path
+    OG_path=$(pwd)
+    cd /home/$USER
+    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter --name my-distbox
+    cd $OG_path
 fi
