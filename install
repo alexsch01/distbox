@@ -1,5 +1,3 @@
-#!/bin/bash
-
 if ! command -v rpm-ostree &> /dev/null
 then
     echo "rpm-ostree could not be found"
