@@ -1,0 +1,54 @@
+sudo rm -rf ~/distbox-home
+mkdir -p ~/distbox-home/.local
+
+curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/install | sh -s -- --prefix ~/distbox-home/.local
+
+HOME=$HOME/distbox-home podman create \
+    --hostname $HOSTNAME \
+    --name my-distbox \
+    --privileged \
+    --security-opt label=disable \
+    --security-opt apparmor=unconfined \
+    --pids-limit=-1 \
+    --user root:root \
+    --ipc host \
+    --network host \
+    --pid host \
+    --label manager=distrobox \
+    --label distrobox.unshare_groups=0 \
+    --env SHELL=bash \
+    --env HOME=/home/$USER \
+    --env container=podman \
+    --env TERMINFO_DIRS=/usr/share/terminfo:/run/host/usr/share/terminfo \
+    --env CONTAINER_ID=my-distbox \
+    --volume /tmp:/tmp:rslave \
+    --volume /home/$USER/distbox-home/.local/bin/distrobox-init:/usr/bin/entrypoint:ro \
+    --volume /home/$USER/distbox-home/.local/bin/distrobox-export:/usr/bin/distrobox-export:ro \
+    --volume /home/$USER/distbox-home/.local/bin/distrobox-host-exec:/usr/bin/distrobox-host-exec:ro \
+    --volume /home/$USER/distbox-home:/home/$USER \
+    --volume /var/home/$USER/distbox-home:/var/home/$USER \
+    --volume /dev:/dev:rslave \
+    --volume /sys:/sys:rslave \
+    --volume /dev/pts \
+    --volume /dev/null:/dev/ptmx \
+    --volume /sys/fs/selinux \
+    --volume /var/log/journal \
+    --volume /run/user/$(id -u):/run/user/$(id -u):ro \
+    --volume /etc/hosts:/etc/hosts:ro \
+    --volume /etc/resolv.conf:/etc/resolv.conf:ro \
+    --volume /etc/hostname:/etc/hostname:ro \
+    --annotation run.oci.keep_original_groups=1 \
+    --ulimit host \
+    --userns keep-id \
+    --entrypoint /usr/bin/entrypoint registry.fedoraproject.org/fedora-toolbox:40 \
+    --verbose \
+    --name $USER \
+    --user $(id -u) \
+    --group $(id -g) \
+    --home /home/$USER \
+    --init 0 \
+    --nvidia 0 \
+    --pre-init-hooks '' \
+    --additional-packages '' -- ''
+
+HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter --name my-distbox
