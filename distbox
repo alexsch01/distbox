@@ -5,10 +5,6 @@ fi
 
 OG_path=$(pwd)
 
-if [ "$2" != "" ]; then
-    echo "Valid commands....\ndistbox install\ndistbox run\ndistbox stop"
-fi
-
 if [ "$1" = "install" ]; then
     read -r -p "Do you want to install/replace your distbox? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
@@ -76,5 +72,5 @@ elif [ "$1" = "run" ]; then
 elif [ "$1" = "stop" ]; then
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox stop my-distbox
 else
-    echo "Valid commands....\ndistbox install\ndistbox run\ndistbox stop"
+    echo $'Valid commands:\n\ndistbox install\ndistbox run\ndistbox stop'
 fi
