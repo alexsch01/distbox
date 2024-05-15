@@ -1,10 +1,13 @@
-if ! command -v rpm-ostree &> /dev/null
-then
+if ! command -v rpm-ostree &> /dev/null; then
     echo "rpm-ostree could not be found"
     exit 1
 fi
 
 OG_path=$(pwd)
+
+if [ "$2" != "" ]; then
+    echo "Valid commands....\ndistbox install\ndistbox run\ndistbox stop"
+fi
 
 if [ "$1" = "install" ]; then
     read -r -p "Do you want to install/replace your distbox? [y/N] " response
@@ -66,8 +69,12 @@ if [ "$1" = "install" ]; then
     cd /home/$USER
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter --name my-distbox -- sudo chown $USER: /run/user/$(id -u)
     cd $OG_path
-elif [ "$1" = "" ]; then
+elif [ "$1" = "run" ]; then
     cd /home/$USER
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter --name my-distbox
     cd $OG_path
+elif [ "$1" = "stop" ]; then
+    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox stop my-distbox
+else
+    echo "Valid commands....\ndistbox install\ndistbox run\ndistbox stop"
 fi
