@@ -44,7 +44,7 @@ if [ "$1" = "install" ]; then
         --volume /sys/fs/selinux \
         --volume /var/log/journal \
         --volume /run/user/$(id -u)/wayland-0:/run/user/$(id -u)/wayland-0:ro \
-        --volume $XAUTHORITY/$XAUTHORITY:ro \
+        --volume $XAUTHORITY:$XAUTHORITY:ro \
         --volume /etc/hosts:/etc/hosts:ro \
         --volume /etc/resolv.conf:/etc/resolv.conf:ro \
         --volume /etc/hostname:/etc/hostname:ro \
