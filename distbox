@@ -30,9 +30,8 @@ if [ "$1" = "install" ]; then
         --user root:root \
         --ipc host \
         --network host \
-        --pid host \
         --label manager=distrobox \
-        --label distrobox.unshare_groups=0 \
+        --label distrobox.unshare_groups=1 \
         --env SHELL=bash \
         --env HOME=/home/$USER \
         --env container=podman \
@@ -70,6 +69,9 @@ if [ "$1" = "install" ]; then
     cd /home/$USER
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter --name my-distbox -- sudo chown $USER: /run/user/$(id -u)
     cd $OG_path
+    
+    cp /etc/skel/.bashrc ~/distbox-home
+    cp /etc/skel/.bash_profile ~/distbox-home
 elif [ "$1" = "" ]; then
     cd /home/$USER
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter --name my-distbox
