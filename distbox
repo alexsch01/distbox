@@ -66,9 +66,6 @@ if [ "$1" = "install" ]; then
     cd /home/$USER
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter --name my-distbox -- sudo chown $USER: /run/user/$(id -u)
     cd $OG_path
-    
-    cp /etc/skel/.bashrc ~/distbox-home
-    cp /etc/skel/.bash_profile ~/distbox-home
 elif [ "$1" = "" ]; then
     cd /home/$USER
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter --name my-distbox
