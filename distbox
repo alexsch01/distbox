@@ -31,7 +31,7 @@ if [ "$1" = "install" ]; then
         --ipc host \
         --network host \
         --label manager=distrobox \
-        --label distrobox.unshare_groups=1 \
+        --label distrobox.unshare_groups=0 \
         --env SHELL=bash \
         --env HOME=/home/$USER \
         --env container=podman \
