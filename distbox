@@ -63,11 +63,11 @@ if [ "$1" = "install" ]; then
             --additional-packages '' -- ''
 
     cd /home/$USER
-    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter --name my-distbox -- sudo chown $USER: /run/user/$(id -u)
+    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter my-distbox -- sudo chown $USER: /run/user/$(id -u)
     cd $OG_path
 elif [ "$1" = "run" ]; then
     cd /home/$USER
-    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter --name my-distbox
+    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter my-distbox
     cd $OG_path
 elif [ "$1" = "stop" ]; then
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox stop my-distbox
