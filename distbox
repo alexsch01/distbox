@@ -16,9 +16,6 @@ if [ "$1" = "install" ]; then
     mkdir -p ~/distbox-home/.local
     
     curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/install | sh -s -- --prefix ~/distbox-home/.local
-
-    xauth_var=$(xauth info | head -n 1)
-    xauth_var=${xauth_var#Authority file:       /run/user/$(id -u)/}
     
     HOME=$HOME/distbox-home podman create \
         --hostname $HOSTNAME \
@@ -47,7 +44,7 @@ if [ "$1" = "install" ]; then
         --volume /sys/fs/selinux \
         --volume /var/log/journal \
         --volume /run/user/$(id -u)/wayland-0:/run/user/$(id -u)/wayland-0:ro \
-        --volume /run/user/$(id -u)/$xauth_var:/run/user/$(id -u)/$xauth_var:ro \
+        --volume $XAUTHORITY/$XAUTHORITY:ro \
         --volume /etc/hosts:/etc/hosts:ro \
         --volume /etc/resolv.conf:/etc/resolv.conf:ro \
         --volume /etc/hostname:/etc/hostname:ro \
