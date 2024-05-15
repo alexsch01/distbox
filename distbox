@@ -39,8 +39,6 @@ if [ "$1" = "install" ]; then
         --env TERMINFO_DIRS=/usr/share/terminfo:/run/host/usr/share/terminfo \
         --env CONTAINER_ID=my-distbox \
         --volume /home/$USER/distbox-home/.local/bin/distrobox-init:/usr/bin/entrypoint:ro \
-        --volume /home/$USER/distbox-home/.local/bin/distrobox-export:/usr/bin/distrobox-export:ro \
-        --volume /home/$USER/distbox-home/.local/bin/distrobox-host-exec:/usr/bin/distrobox-host-exec:ro \
         --volume /home/$USER/distbox-home:/home/$USER \
         --volume /dev:/dev:rslave \
         --volume /sys:/sys:rslave \
@@ -56,16 +54,17 @@ if [ "$1" = "install" ]; then
         --annotation run.oci.keep_original_groups=1 \
         --ulimit host \
         --userns keep-id \
-        --entrypoint /usr/bin/entrypoint registry.fedoraproject.org/fedora-toolbox:40 \
-        --verbose \
-        --name $USER \
-        --user $(id -u) \
-        --group $(id -g) \
-        --home /home/$USER \
-        --init 0 \
-        --nvidia 0 \
-        --pre-init-hooks '' \
-        --additional-packages '' -- ''
+        --entrypoint /usr/bin/entrypoint
+        registry.fedoraproject.org/fedora-toolbox:40 \
+            --verbose \
+            --name $USER \
+            --user $(id -u) \
+            --group $(id -g) \
+            --home /home/$USER \
+            --init 0 \
+            --nvidia 0 \
+            --pre-init-hooks '' \
+            --additional-packages '' -- ''
 
     cd /home/$USER
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter --name my-distbox -- sudo chown $USER: /run/user/$(id -u)
