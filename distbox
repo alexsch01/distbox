@@ -14,6 +14,8 @@ if [ "$1" = "install" ]; then
     sudo rm -rf ~/distbox-home
     mkdir -p ~/distbox-home/.local
     
+    ln -sf $XAUTHORITY /run/user/$(id -u)/distbox-X11-symlink
+    
     curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/install | sh -s -- --prefix ~/distbox-home/.local
     
     HOME=$HOME/distbox-home podman create \
@@ -43,7 +45,7 @@ if [ "$1" = "install" ]; then
         --volume /sys/fs/selinux \
         --volume /var/log/journal \
         --volume /run/user/$(id -u)/wayland-0:/run/user/$(id -u)/wayland-0:ro \
-        --volume $XAUTHORITY:$XAUTHORITY:ro \
+        --volume /run/user/$(id -u)/distbox-X11-symlink:/run/user/$(id -u)/distbox-X11-symlink:ro \
         --volume /etc/hosts:/etc/hosts:ro \
         --volume /etc/resolv.conf:/etc/resolv.conf:ro \
         --volume /etc/hostname:/etc/hostname:ro \
@@ -66,8 +68,13 @@ if [ "$1" = "install" ]; then
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter my-distbox -- sudo chown $USER: /run/user/$(id -u)
     cd $OG_path
 elif [ "$1" = "run" ]; then
+    if [ $(readlink -f /run/user/1000/distbox-X11-symlink) != "$XAUTHORITY" ]; then
+        ln -sf $XAUTHORITY /run/user/$(id -u)/distbox-X11-symlink
+        HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox stop my-distbox --yes 1> /dev/null
+    fi
+
     cd /home/$USER
-    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter my-distbox
+    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter my-distbox --additional-flags "--env XAUTHORITY=/run/user/$(id -u)/distbox-X11-symlink"
     cd $OG_path
 elif [ "$1" = "stop" ]; then
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox stop my-distbox
