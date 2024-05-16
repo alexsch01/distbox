@@ -29,7 +29,7 @@ if [ "$1" = "install" ]; then
         --ipc host \
         --network host \
         --label manager=distrobox \
-        --label distrobox.unshare_groups=0 \
+        --label distrobox.unshare_groups=1 \
         --env SHELL=bash \
         --env HOME=/home/$USER \
         --env container=podman \
@@ -67,6 +67,11 @@ if [ "$1" = "install" ]; then
     cd /home/$USER
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter my-distbox -- sudo chown $USER: /run/user/$(id -u)
     cd $OG_path
+
+    cp /etc/skel/.bashrc ~/distbox-home
+    cp /etc/skel/.bash_profile ~/distbox-home
+
+    echo "export XAUTHORITY=/run/user/1000/distbox-X11-symlink" >> ~/distbox-home/.bashrc
 elif [ "$1" = "run" ]; then
     if [ $(readlink -f /run/user/1000/distbox-X11-symlink) != "$XAUTHORITY" ]; then
         ln -sf $XAUTHORITY /run/user/$(id -u)/distbox-X11-symlink
@@ -74,7 +79,7 @@ elif [ "$1" = "run" ]; then
     fi
 
     cd /home/$USER
-    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter my-distbox --additional-flags "--env XAUTHORITY=/run/user/$(id -u)/distbox-X11-symlink"
+    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter my-distbox
     cd $OG_path
 elif [ "$1" = "stop" ]; then
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox stop my-distbox
