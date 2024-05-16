@@ -35,6 +35,7 @@ if [ "$1" = "install" ]; then
         --env container=podman \
         --env TERMINFO_DIRS=/usr/share/terminfo:/run/host/usr/share/terminfo \
         --env CONTAINER_ID=my-distbox \
+        --env XAUTHORITY=/run/user/$(id -u)/distbox-X11-symlink \
         --volume /home/$USER/distbox-home/.local/bin/distrobox-init:/usr/bin/entrypoint:ro \
         --volume /home/$USER/distbox-home/.local/bin/distrobox-host-exec:/usr/bin/distrobox-host-exec:ro \
         --volume /home/$USER/distbox-home:/home/$USER \
