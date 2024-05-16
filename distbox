@@ -14,6 +14,8 @@ if [ "$1" = "install" ]; then
     sudo rm -rf ~/distbox-home
     mkdir -p ~/distbox-home/.local
     
+    sudo ln -sf $XAUTHORITY /run/user/$(id -u)/distbox-X11-symlink
+    
     curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/install | sh -s -- --prefix ~/distbox-home/.local
     
     HOME=$HOME/distbox-home podman create \
@@ -43,7 +45,7 @@ if [ "$1" = "install" ]; then
         --volume /sys/fs/selinux \
         --volume /var/log/journal \
         --volume /run/user/$(id -u)/wayland-0:/run/user/$(id -u)/wayland-0:ro \
-        --volume $XAUTHORITY:$XAUTHORITY:ro \
+        --volume /run/user/$(id -u)/distbox-X11-symlink:/run/user/$(id -u)/distbox-X11-symlink:ro \
         --volume /etc/hosts:/etc/hosts:ro \
         --volume /etc/resolv.conf:/etc/resolv.conf:ro \
         --volume /etc/hostname:/etc/hostname:ro \
