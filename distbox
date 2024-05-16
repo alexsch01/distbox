@@ -68,6 +68,8 @@ if [ "$1" = "install" ]; then
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter my-distbox -- sudo chown $USER: /run/user/$(id -u)
     cd $OG_path
 elif [ "$1" = "run" ]; then
+    ln -sf $XAUTHORITY /run/user/$(id -u)/distbox-X11-symlink
+
     cd /home/$USER
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter my-distbox --additional-flags "--env XAUTHORITY=/run/user/$(id -u)/distbox-X11-symlink"
     cd $OG_path
