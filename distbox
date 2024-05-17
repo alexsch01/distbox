@@ -74,7 +74,7 @@ elif [ "$1" = "run" ]; then
         HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox stop my-distbox --yes 1> /dev/null
     fi
 
-    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter my-distbox --no-workdir -- echo
+    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter my-distbox --no-workdir -- echo -n
     HOME=$HOME/distbox-home podman exec --interactive --detach-keys= --user=root --tty --workdir=/home/$USER --env HISTCONTROL=ignoredups --env HISTSIZE=1000 --env XDG_SESSION_TYPE=wayland --env LANG=en_US.UTF-8 --env WAYLAND_DISPLAY=wayland-0 --env DISPLAY=:0 --env XDG_RUNTIME_DIR=/run/user/$(id -u) my-distbox su $USER --pty
 elif [ "$1" = "stop" ]; then
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox stop my-distbox
