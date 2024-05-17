@@ -66,6 +66,8 @@ if [ "$1" = "install" ]; then
 
     cp /etc/skel/.bashrc ~/distbox-home
     cp /etc/skel/.bash_profile ~/distbox-home
+
+    echo "export XAUTHORITY=/run/user/$(id -u)/distbox-X11-symlink" >> ~/distbox-home/.bashrc
 elif [ "$1" = "run" ]; then
     if [ $(readlink -f /run/user/$(id -u)/distbox-X11-symlink) != "$XAUTHORITY" ]; then
         ln -sf $XAUTHORITY /run/user/$(id -u)/distbox-X11-symlink
@@ -86,7 +88,6 @@ elif [ "$1" = "run" ]; then
         --env WAYLAND_DISPLAY=wayland-0 \
         --env DISPLAY=:0 \
         --env XDG_RUNTIME_DIR=/run/user/$(id -u) \
-        --env XAUTHORITY=/run/user/$(id -u)/distbox-X11-symlink \
     my-distbox \
         su $USER --pty
 elif [ "$1" = "stop" ]; then
