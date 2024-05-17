@@ -3,8 +3,6 @@ if ! command -v rpm-ostree &> /dev/null; then
     exit 1
 fi
 
-OG_path=$(pwd)
-
 if [ "$1" = "install" ]; then
     read -r -p "Do you want to install/replace your distbox? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
@@ -64,9 +62,7 @@ if [ "$1" = "install" ]; then
             --pre-init-hooks '' \
             --additional-packages '' -- ''
 
-    cd /home/$USER
-    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter my-distbox -- sudo chown $USER: /run/user/$(id -u)
-    cd $OG_path
+    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter my-distbox --no-workdir -- sudo chown $USER: /run/user/$(id -u)
 
     cp /etc/skel/.bashrc ~/distbox-home
     cp /etc/skel/.bash_profile ~/distbox-home
@@ -78,9 +74,7 @@ elif [ "$1" = "run" ]; then
         HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox stop my-distbox --yes 1> /dev/null
     fi
 
-    cd /home/$USER
-    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter my-distbox
-    cd $OG_path
+    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter my-distbox --no-workdir
 elif [ "$1" = "stop" ]; then
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox stop my-distbox
 else
