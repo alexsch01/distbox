@@ -26,7 +26,7 @@ if [ "$1" = "install" ]; then
         --security-opt apparmor=unconfined \
         --pids-limit=-1 \
         --user root:root \
-        --shm-size $(df -h /dev/shm | awk '{ print $2 }' | sed -n 2p) \
+        --ipc host \
         --network host \
         --label manager=distrobox \
         --label distrobox.unshare_groups=1 \
