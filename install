@@ -5,5 +5,5 @@ then
 fi
 
 mkdir -p ~/.local/bin
-curl -s https://raw.githubusercontent.com/alexsch01/distbox/main/distbox > ~/.local/bin/distbox
+curl -s https://raw.githubusercontent.com/alexsch01/distbox/test/distbox > ~/.local/bin/distbox
 chmod +x ~/.local/bin/distbox
