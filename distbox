@@ -62,7 +62,7 @@ if [ "$1" = "install" ]; then
             --init 0 \
             --nvidia 0 \
             --pre-init-hooks '' \
-            --additional-packages 'libglvnd-gles' -- ''
+            --additional-packages '' -- ''
 
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox-enter my-distbox --no-workdir -- sudo chown $USER: /run/user/$(id -u)
 
