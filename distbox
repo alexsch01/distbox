@@ -38,7 +38,6 @@ if [ "$1" = "install" ]; then
         --env TERMINFO_DIRS=/usr/share/terminfo \
         --env CONTAINER_ID=my-distbox \
         --volume /home/$USER/distbox-home/.local/bin/distrobox-init:/usr/bin/entrypoint:ro \
-        --volume /home/$USER/distbox-home/.local/bin/distrobox-host-exec:/usr/bin/distrobox-host-exec:ro \
         --volume /home/$USER/distbox-home:/home/$USER \
         --volume /dev:/dev:ro \
         --volume /sys:/sys:ro \
