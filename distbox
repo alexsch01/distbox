@@ -53,17 +53,16 @@ if [ "$1" = "install" ]; then
         --annotation run.oci.keep_original_groups=1 \
         --ulimit host \
         --userns keep-id \
-        --entrypoint /usr/bin/entrypoint \
-    registry.fedoraproject.org/fedora-toolbox:40 \
-        --verbose \
-        --name $USER \
-        --user $(id -u) \
-        --group $(id -g) \
-        --home /home/$USER \
-        --init 0 \
-        --nvidia 0 \
-        --pre-init-hooks '' \
-        --additional-packages 'libglvnd-gles' -- ''
+        --entrypoint /usr/bin/entrypoint registry.fedoraproject.org/fedora-toolbox:40 \
+            --verbose \
+            --name $USER \
+            --user $(id -u) \
+            --group $(id -g) \
+            --home /home/$USER \
+            --init 0 \
+            --nvidia 0 \
+            --pre-init-hooks '' \
+            --additional-packages 'libglvnd-gles' -- ''
 
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox-enter my-distbox --no-workdir -- sudo chown $USER: /run/user/$(id -u)
 
