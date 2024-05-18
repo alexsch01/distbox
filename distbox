@@ -17,6 +17,7 @@ if [ "$1" = "install" ]; then
     curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/distrobox-enter > ~/distbox-home/.local/bin/distrobox-enter
     curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/distrobox-init > ~/distbox-home/.local/bin/distrobox-init
     curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/distrobox-host-exec > ~/distbox-home/.local/bin/distrobox-host-exec
+    curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/distrobox-stop > ~/distbox-home/.local/bin/distrobox-stop
     
     chmod +x ~/distbox-home/.local/bin/distrobox-*
     
@@ -66,7 +67,7 @@ if [ "$1" = "install" ]; then
         --pre-init-hooks '' \
         --additional-packages '' -- ''
 
-    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox enter my-distbox --no-workdir -- sudo chown $USER: /run/user/$(id -u)
+    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox-enter my-distbox --no-workdir -- sudo chown $USER: /run/user/$(id -u)
 
     cp /etc/skel/.bashrc ~/distbox-home
     cp /etc/skel/.bash_profile ~/distbox-home
@@ -75,7 +76,7 @@ if [ "$1" = "install" ]; then
 elif [ "$1" = "run" ]; then
     if [ $(readlink -f /run/user/$(id -u)/distbox-X11-symlink) != "$XAUTHORITY" ]; then
         ln -sf $XAUTHORITY /run/user/$(id -u)/distbox-X11-symlink
-        HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox stop my-distbox --yes 1> /dev/null
+        HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox-stop my-distbox --yes 1> /dev/null
     fi
 
     HOME=$HOME/distbox-home podman start my-distbox > /dev/null
@@ -95,7 +96,7 @@ elif [ "$1" = "run" ]; then
     my-distbox \
         su $USER --pty
 elif [ "$1" = "stop" ]; then
-    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox stop my-distbox
+    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox-stop my-distbox
 else
     echo $'Valid commands:\n\ndistbox install\ndistbox run\ndistbox stop'
 fi
