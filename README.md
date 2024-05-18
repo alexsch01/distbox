@@ -10,7 +10,7 @@ host system survives when `sudo rm -rf / --no-preserve-root` is run in the distb
 
 ### How To Install
 ```
-curl -s https://raw.githubusercontent.com/alexsch01/distbox/main/install | sh
+curl -s https://raw.githubusercontent.com/alexsch01/distbox/test/install | sh
 ```
 
 ### Commands
