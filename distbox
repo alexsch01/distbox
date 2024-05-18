@@ -18,7 +18,7 @@ if [ "$1" = "install" ]; then
     curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/distrobox-init > ~/distbox-home/.local/bin/distrobox-init
     curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/distrobox-host-exec > ~/distbox-home/.local/bin/distrobox-host-exec
     
-   chmod +x ~/distbox-home/.local/bin/distrobox-*
+    chmod +x ~/distbox-home/.local/bin/distrobox-*
     
     HOME=$HOME/distbox-home podman create \
         --hostname $HOSTNAME \
