@@ -14,9 +14,9 @@ if [ "$1" = "install" ]; then
     
     ln -sf $XAUTHORITY /run/user/$(id -u)/distbox-X11-symlink
     
-    curl -s https://raw.githubusercontent.com/alexsch01/distbox-distrobox/test/distrobox-enter > ~/distbox-home/.local/bin/distrobox-enter
-    curl -s https://raw.githubusercontent.com/alexsch01/distbox-distrobox/test/distrobox-init > ~/distbox-home/.local/bin/distrobox-init
-    curl -s https://raw.githubusercontent.com/alexsch01/distbox-distrobox/test/distrobox-stop > ~/distbox-home/.local/bin/distrobox-stop
+    curl -s https://raw.githubusercontent.com/alexsch01/distbox-distrobox/main/distrobox-enter > ~/distbox-home/.local/bin/distrobox-enter
+    curl -s https://raw.githubusercontent.com/alexsch01/distbox-distrobox/main/distrobox-init > ~/distbox-home/.local/bin/distrobox-init
+    curl -s https://raw.githubusercontent.com/alexsch01/distbox-distrobox/main/distrobox-stop > ~/distbox-home/.local/bin/distrobox-stop
     
     chmod +x ~/distbox-home/.local/bin/distrobox-*
     
