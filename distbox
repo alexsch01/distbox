@@ -1,3 +1,5 @@
+#!/bin/sh
+
 if ! command -v rpm-ostree &> /dev/null; then
     echo "rpm-ostree could not be found"
     exit 1
@@ -8,18 +10,18 @@ if [ "$1" = "install" ]; then
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
         exit
     fi
-    
+
     sudo rm -rf ~/distbox-home
     mkdir -p ~/distbox-home/.local/bin
-    
+
     ln -sf $XAUTHORITY /run/user/$(id -u)/distbox-X11-symlink
-    
+
     curl -s https://raw.githubusercontent.com/alexsch01/distbox-distrobox/main/distrobox-enter > ~/distbox-home/.local/bin/distrobox-enter
     curl -s https://raw.githubusercontent.com/alexsch01/distbox-distrobox/main/distrobox-init > ~/distbox-home/.local/bin/distrobox-init
     curl -s https://raw.githubusercontent.com/alexsch01/distbox-distrobox/main/distrobox-stop > ~/distbox-home/.local/bin/distrobox-stop
-    
+
     chmod +x ~/distbox-home/.local/bin/distrobox-*
-    
+
     HOME=$HOME/distbox-home podman create \
         --hostname $HOSTNAME \
         --name my-distbox \
@@ -46,6 +48,7 @@ if [ "$1" = "install" ]; then
         --volume /sys/fs/selinux \
         --volume /var/log/journal \
         --volume /run/user/$(id -u)/wayland-0:/run/user/$(id -u)/wayland-0:ro \
+        --volume /run/user/$(id -u)/pipewire-0:/run/user/$(id -u)/pipewire-0:ro \
         --volume /run/user/$(id -u)/distbox-X11-symlink:/run/user/$(id -u)/distbox-X11-symlink:ro \
         --volume /etc/hosts:/etc/hosts:ro \
         --volume /etc/resolv.conf:/etc/resolv.conf:ro \
@@ -68,8 +71,6 @@ if [ "$1" = "install" ]; then
 
     cp /etc/skel/.bashrc ~/distbox-home
     cp /etc/skel/.bash_profile ~/distbox-home
-
-    echo "export XAUTHORITY=/run/user/$(id -u)/distbox-X11-symlink" >> ~/distbox-home/.bashrc
 elif [ "$1" = "run" ]; then
     if [ $(readlink -f /run/user/$(id -u)/distbox-X11-symlink) != "$XAUTHORITY" ]; then
         ln -sf $XAUTHORITY /run/user/$(id -u)/distbox-X11-symlink
@@ -91,9 +92,15 @@ elif [ "$1" = "run" ]; then
         --env DISPLAY=:0 \
         --env XDG_RUNTIME_DIR=/run/user/$(id -u) \
     my-distbox \
-        su $USER --pty
+        su $USER --pty -c "XAUTHORITY=/run/user/$(id -u)/distbox-X11-symlink ${*: 2}"
+elif [ "$1" = "enter" ]; then
+    distbox run bash
 elif [ "$1" = "stop" ]; then
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox-stop my-distbox
 else
-    echo $'Valid commands:\n\ndistbox install\ndistbox run\ndistbox stop'
+    echo $'Valid commands: \n'
+    echo 'distbox install'
+    echo 'distbox run COMMAND'
+    echo 'distbox enter'
+    echo 'distbox stop'
 fi
