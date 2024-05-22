@@ -73,8 +73,8 @@ if [ "$1" = "install" ]; then
     cp /etc/skel/.bash_profile ~/distbox-home
 elif [ "$1" = "run" ]; then
     if [ $(readlink -f /run/user/$(id -u)/distbox-X11-symlink) != "$XAUTHORITY" ]; then
-        ln -sf $XAUTHORITY /run/user/$(id -u)/distbox-X11-symlink
         HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox-stop my-distbox --yes 1> /dev/null
+        ln -sf $XAUTHORITY /run/user/$(id -u)/distbox-X11-symlink
     fi
 
     HOME=$HOME/distbox-home podman start my-distbox > /dev/null
