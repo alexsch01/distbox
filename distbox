@@ -65,7 +65,7 @@ if [ "$1" = "install" ]; then
             --init 0 \
             --nvidia 0 \
             --pre-init-hooks '' \
-            --additional-packages 'google-noto-color-emoji-fonts' -- ''
+            --additional-packages 'google-noto-color-emoji-fonts google-noto-sans-mono-fonts' -- ''
 
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox-enter my-distbox --no-workdir -- sudo chown $USER: /run/user/$(id -u)
 
