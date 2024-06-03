@@ -11,8 +11,7 @@ if [ "$1" = "install" ]; then
         exit
     fi
 
-    podman unshare chown root: -R ~/distbox-home/.local/share/containers/storage/overlay 2> /dev/null
-    podman unshare chown root: -R ~/distbox-home/.local/share/containers/storage/volumes 2> /dev/null
+    podman unshare chown root: -R ~/distbox-home/.local/share/containers/storage 2> /dev/null
     podman unshare rm -rf ~/distbox-home 2> /dev/null
     rm -rf ~/distbox-home
 
