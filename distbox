@@ -11,7 +11,7 @@ if [ "$1" = "install" ]; then
         exit
     fi
 
-    sudo rm -rf ~/distbox-home
+    podman unshare rm -rf ~/distbox-home
     mkdir -p ~/distbox-home/.local/bin
 
     ln -sf $XAUTHORITY /run/user/$(id -u)/distbox-X11-symlink
