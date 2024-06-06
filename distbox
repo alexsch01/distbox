@@ -94,6 +94,7 @@ elif [ "$1" = "run" ]; then
         --env WAYLAND_DISPLAY=wayland-0 \
         --env DISPLAY=:0 \
         --env XDG_RUNTIME_DIR=/run/user/$(id -u) \
+        --env TZ=$(timedatectl show --va -p Timezone) \
     my-distbox \
         su $USER --pty -c "XAUTHORITY=/run/user/$(id -u)/distbox-X11-symlink ${*: 2}"
 elif [ "$1" = "enter" ]; then
