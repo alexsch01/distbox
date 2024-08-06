@@ -21,7 +21,6 @@ if [ "$1" = "install" ]; then
 
     curl -s https://raw.githubusercontent.com/alexsch01/distbox-distrobox/main/distrobox-enter > ~/distbox-home/.local/bin/distrobox-enter
     curl -s https://raw.githubusercontent.com/alexsch01/distbox-distrobox/main/distrobox-init > ~/distbox-home/.local/bin/distrobox-init
-    curl -s https://raw.githubusercontent.com/alexsch01/distbox-distrobox/main/distrobox-stop > ~/distbox-home/.local/bin/distrobox-stop
 
     chmod +x ~/distbox-home/.local/bin/distrobox-*
 
@@ -76,7 +75,7 @@ if [ "$1" = "install" ]; then
     cp /etc/skel/.bash_profile ~/distbox-home
 elif [ "$1" = "run" ]; then
     if [ $(readlink -f /run/user/$(id -u)/distbox-X11-symlink) != "$XAUTHORITY" ]; then
-        HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox-stop my-distbox --yes 1> /dev/null
+        HOME=$HOME/distbox-home podman stop my-distbox 1> /dev/null
         ln -sf $XAUTHORITY /run/user/$(id -u)/distbox-X11-symlink
     fi
 
@@ -100,7 +99,12 @@ elif [ "$1" = "run" ]; then
 elif [ "$1" = "enter" ]; then
     distbox run bash
 elif [ "$1" = "stop" ]; then
-    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox-stop my-distbox
+    read -r -p "Do you want to stop your distbox? [y/N] " response
+    if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+        exit
+    fi
+
+    HOME=$HOME/distbox-home podman stop my-distbox
 else
     echo $'Valid commands: \n'
     echo 'distbox install'
