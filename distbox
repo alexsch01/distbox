@@ -67,16 +67,22 @@ if [ "$1" = "install" ]; then
             --init 0 \
             --nvidia 0 \
             --pre-init-hooks '' \
-            --additional-packages 'google-noto-color-emoji-fonts google-noto-sans-mono-fonts' -- ''
+            --additional-packages 'dbus-daemon google-noto-color-emoji-fonts google-noto-sans-mono-fonts' -- ''
 
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox-enter my-distbox --no-workdir -- sudo chown $USER: /run/user/$(id -u)
+    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox-enter my-distbox --no-workdir -- sudo mkdir /run/dbus
 
     cp /etc/skel/.bashrc ~/distbox-home
     cp /etc/skel/.bash_profile ~/distbox-home
 elif [ "$1" = "run" ]; then
-    if [ $(readlink -f /run/user/$(id -u)/distbox-X11-symlink) != "$XAUTHORITY" ]; then
+    if [ "$(readlink -f /run/user/$(id -u)/distbox-X11-symlink)" != "$XAUTHORITY" ]; then
         HOME=$HOME/distbox-home podman stop my-distbox 1> /dev/null
         ln -sf $XAUTHORITY /run/user/$(id -u)/distbox-X11-symlink
+    fi
+
+    if [ "$(HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox-enter my-distbox --no-workdir -- ps --no-headers -C dbus-daemon -o state)" != "S" ]; then
+        HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox-enter my-distbox --no-workdir -- sudo rm -f /run/dbus/pid
+        HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox-enter my-distbox --no-workdir -- sudo dbus-daemon --system
     fi
 
     HOME=$HOME/distbox-home podman start my-distbox > /dev/null
@@ -94,6 +100,7 @@ elif [ "$1" = "run" ]; then
         --env DISPLAY=:0 \
         --env XDG_RUNTIME_DIR=/run/user/$(id -u) \
         --env TZ=$(timedatectl show --va -p Timezone) \
+        --env DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket \
     my-distbox \
         su $USER --pty -c "XAUTHORITY=/run/user/$(id -u)/distbox-X11-symlink ${*: 2}"
 elif [ "$1" = "enter" ]; then
