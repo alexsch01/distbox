@@ -85,6 +85,7 @@ elif [ "$1" = "run" ]; then
         HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox-enter my-distbox --no-workdir -- sudo dbus-daemon --system
     fi
 
+    HOME=$HOME/distbox-home podman start my-distbox > /dev/null
     HOME=$HOME/distbox-home podman exec \
         --interactive \
         --detach-keys= \
