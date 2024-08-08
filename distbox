@@ -69,8 +69,9 @@ if [ "$1" = "install" ]; then
             --pre-init-hooks '' \
             --additional-packages 'dbus-daemon google-noto-color-emoji-fonts google-noto-sans-mono-fonts' -- ''
 
-    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox-enter my-distbox --no-workdir -- sudo chown $USER: /run/user/$(id -u)
-    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox-enter my-distbox --no-workdir -- sudo mkdir /run/dbus
+    HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox-enter my-distbox --no-workdir -- ''
+    HOME=$HOME/distbox-home podman exec my-distbox sudo chown $USER: /run/user/$(id -u)
+    HOME=$HOME/distbox-home podman exec my-distbox sudo mkdir /run/dbus
 
     cp /etc/skel/.bashrc ~/distbox-home
     cp /etc/skel/.bash_profile ~/distbox-home
@@ -80,12 +81,12 @@ elif [ "$1" = "run" ]; then
         ln -sf $XAUTHORITY /run/user/$(id -u)/distbox-X11-symlink
     fi
 
-    if [ "$(HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox-enter my-distbox --no-workdir -- ps --no-headers -C dbus-daemon -o state)" != "S" ]; then
-        HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox-enter my-distbox --no-workdir -- sudo rm -f /run/dbus/pid
-        HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox-enter my-distbox --no-workdir -- sudo dbus-daemon --system
+    HOME=$HOME/distbox-home podman start my-distbox > /dev/null
+    if [ "$(HOME=$HOME/distbox-home podman exec my-distbox ps --no-headers -C dbus-daemon -o state)" != "S" ]; then
+        HOME=$HOME/distbox-home podman exec my-distbox sudo rm -f /run/dbus/pid
+        HOME=$HOME/distbox-home podman exec my-distbox sudo dbus-daemon --system
     fi
 
-    HOME=$HOME/distbox-home podman start my-distbox > /dev/null
     HOME=$HOME/distbox-home podman exec \
         --interactive \
         --detach-keys= \
