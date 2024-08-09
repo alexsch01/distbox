@@ -67,11 +67,10 @@ if [ "$1" = "install" ]; then
             --init 0 \
             --nvidia 0 \
             --pre-init-hooks '' \
-            --additional-packages 'dbus-daemon google-noto-color-emoji-fonts google-noto-sans-mono-fonts' -- ''
+            --additional-packages 'google-noto-color-emoji-fonts google-noto-sans-mono-fonts' -- ''
 
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox-enter my-distbox --no-workdir -- ''
     HOME=$HOME/distbox-home podman exec my-distbox sudo chown $USER: /run/user/$(id -u)
-    HOME=$HOME/distbox-home podman exec my-distbox sudo mkdir /run/dbus
 
     cp /etc/skel/.bashrc ~/distbox-home
     cp /etc/skel/.bash_profile ~/distbox-home
@@ -82,11 +81,6 @@ elif [ "$1" = "run" ]; then
     fi
 
     HOME=$HOME/distbox-home podman start my-distbox > /dev/null
-    if [ "$(HOME=$HOME/distbox-home podman exec my-distbox ps --no-headers -C dbus-daemon -o state)" != "S" ]; then
-        HOME=$HOME/distbox-home podman exec my-distbox sudo rm -f /run/dbus/pid
-        HOME=$HOME/distbox-home podman exec my-distbox sudo dbus-daemon --system
-    fi
-
     HOME=$HOME/distbox-home podman exec \
         --interactive \
         --detach-keys= \
@@ -101,7 +95,6 @@ elif [ "$1" = "run" ]; then
         --env DISPLAY=:0 \
         --env XDG_RUNTIME_DIR=/run/user/$(id -u) \
         --env TZ=$(timedatectl show --va -p Timezone) \
-        --env DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket \
     my-distbox \
         su $USER --pty -c "XAUTHORITY=/run/user/$(id -u)/distbox-X11-symlink ${*: 2}"
 elif [ "$1" = "enter" ]; then
