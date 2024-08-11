@@ -21,3 +21,5 @@ run your distbox - `distbox run COMMAND`
 enter your distbox (alias for distbox run bash) - `distbox enter`
 
 stop your distbox - `distbox stop`
+
+uninstall your distbox - `distbox uninstall`
