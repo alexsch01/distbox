@@ -11,6 +11,7 @@ if [ "$1" = "install" ]; then
         exit
     fi
 
+    HOME=$HOME/distbox-home podman stop my-distbox 1> /dev/null 2> /dev/null
     podman unshare chown root: -R ~/distbox-home/.local/share/containers/storage 2> /dev/null
     podman unshare rm -rf ~/distbox-home 2> /dev/null
     rm -rf ~/distbox-home
@@ -106,10 +107,21 @@ elif [ "$1" = "stop" ]; then
     fi
 
     HOME=$HOME/distbox-home podman stop my-distbox
+elif [ "$1" = "uninstall" ]; then
+    read -r -p "Do you want to uninstall your distbox? [y/N] " response
+    if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+        exit
+    fi
+
+    HOME=$HOME/distbox-home podman stop my-distbox 1> /dev/null 2> /dev/null
+    podman unshare chown root: -R ~/distbox-home/.local/share/containers/storage 2> /dev/null
+    podman unshare rm -rf ~/distbox-home 2> /dev/null
+    rm -rf ~/distbox-home
 else
     echo $'Valid commands: \n'
     echo 'distbox install'
     echo 'distbox run COMMAND'
     echo 'distbox enter'
     echo 'distbox stop'
+    echo 'distbox uninstall'
 fi
