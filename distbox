@@ -106,7 +106,7 @@ elif [ "$1" = "stop" ]; then
         exit
     fi
 
-    HOME=$HOME/distbox-home podman stop my-distbox 1> /dev/null 2> /dev/null
+    HOME=$HOME/distbox-home podman stop my-distbox
 elif [ "$1" = "uninstall" ]; then
     read -r -p "Do you want to uninstall your distbox? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
