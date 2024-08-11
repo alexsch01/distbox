@@ -5,16 +5,20 @@ if ! command -v rpm-ostree &> /dev/null; then
     exit 1
 fi
 
+uninstall_distbox() {
+    HOME=$HOME/distbox-home podman stop my-distbox 1> /dev/null 2> /dev/null
+    podman unshare chown root: -R ~/distbox-home/.local/share/containers/storage 2> /dev/null
+    podman unshare rm -rf ~/distbox-home 2> /dev/null
+    rm -rf ~/distbox-home
+}
+
 if [ "$1" = "install" ]; then
     read -r -p "Do you want to install/replace your distbox? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
         exit
     fi
 
-    HOME=$HOME/distbox-home podman stop my-distbox 1> /dev/null 2> /dev/null
-    podman unshare chown root: -R ~/distbox-home/.local/share/containers/storage 2> /dev/null
-    podman unshare rm -rf ~/distbox-home 2> /dev/null
-    rm -rf ~/distbox-home
+    uninstall_distbox
 
     mkdir -p ~/distbox-home/.local/bin
 
@@ -113,10 +117,7 @@ elif [ "$1" = "uninstall" ]; then
         exit
     fi
 
-    HOME=$HOME/distbox-home podman stop my-distbox 1> /dev/null 2> /dev/null
-    podman unshare chown root: -R ~/distbox-home/.local/share/containers/storage 2> /dev/null
-    podman unshare rm -rf ~/distbox-home 2> /dev/null
-    rm -rf ~/distbox-home
+    uninstall_distbox
 else
     echo $'Valid commands: \n'
     echo 'distbox install'
