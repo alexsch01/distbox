@@ -63,7 +63,7 @@ if [ "$1" = "install" ]; then
         --annotation run.oci.keep_original_groups=1 \
         --ulimit host \
         --userns keep-id \
-        --entrypoint /usr/bin/entrypoint registry.fedoraproject.org/fedora-toolbox:40 \
+        --entrypoint /usr/bin/entrypoint registry.fedoraproject.org/fedora-toolbox \
             --verbose \
             --name $USER \
             --user $(id -u) \
