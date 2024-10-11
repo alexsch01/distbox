@@ -12,6 +12,14 @@ uninstall_distbox() {
     rm -rf ~/distbox-home
 }
 
+dbus_setup() {
+    HOME=$HOME/distbox-home podman exec my-distbox rm -f /run/dbus/pid
+    HOME=$HOME/distbox-home podman exec my-distbox dbus-daemon --system
+    HOME=$HOME/distbox-home podman exec --user=$USER my-distbox dbus-daemon --session --address=unix:path=/run/user/$(id -u)/bus &
+    HOME=$HOME/distbox-home podman exec my-distbox rm -f /etc/machine-id
+    HOME=$HOME/distbox-home podman exec my-distbox dbus-uuidgen --ensure=/etc/machine-id
+}
+
 if [ "$1" = "install" ]; then
     read -r -p "Do you want to install/replace your distbox? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
@@ -72,10 +80,12 @@ if [ "$1" = "install" ]; then
             --init 0 \
             --nvidia 0 \
             --pre-init-hooks '' \
-            --additional-packages 'google-noto-color-emoji-fonts google-noto-sans-mono-fonts' -- ''
+            --additional-packages 'google-noto-color-emoji-fonts google-noto-sans-mono-fonts dbus-daemon' -- ''
 
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox-enter my-distbox --no-workdir -- ''
-    HOME=$HOME/distbox-home podman exec my-distbox sudo chown $USER: /run/user/$(id -u)
+    HOME=$HOME/distbox-home podman exec my-distbox chown $USER: /run/user/$(id -u)
+    HOME=$HOME/distbox-home podman exec my-distbox mkdir /run/dbus
+    dbus_setup
 
     cp /etc/skel/.bashrc ~/distbox-home
     cp /etc/skel/.bash_profile ~/distbox-home
@@ -85,7 +95,12 @@ elif [ "$1" = "run" ]; then
         ln -sf $XAUTHORITY /run/user/$(id -u)/distbox-X11-symlink
     fi
 
+    ERROR_NEED_DBUS_SETUP=$(HOME=$HOME/distbox-home podman exec my-distbox echo 2>&1)
     HOME=$HOME/distbox-home podman start my-distbox > /dev/null
+    if [ "$ERROR_NEED_DBUS_SETUP=" == "Error: can only create exec sessions on running containers: container state improper" ]; then
+        dbus_setup
+    fi
+
     HOME=$HOME/distbox-home podman exec \
         --interactive \
         --detach-keys= \
@@ -100,6 +115,7 @@ elif [ "$1" = "run" ]; then
         --env DISPLAY=:0 \
         --env XDG_RUNTIME_DIR=/run/user/$(id -u) \
         --env TZ=$(timedatectl show --va -p Timezone) \
+        --env DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus \
     my-distbox \
         su $USER --pty -c "XAUTHORITY=/run/user/$(id -u)/distbox-X11-symlink ${*: 2}"
 elif [ "$1" = "enter" ]; then
@@ -109,7 +125,7 @@ elif [ "$1" = "stop" ]; then
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
         exit
     fi
-
+    
     HOME=$HOME/distbox-home podman stop my-distbox
 elif [ "$1" = "uninstall" ]; then
     read -r -p "Do you want to uninstall your distbox? [y/N] " response
