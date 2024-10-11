@@ -97,7 +97,7 @@ elif [ "$1" = "run" ]; then
 
     ERROR_NEED_DBUS_SETUP=$(HOME=$HOME/distbox-home podman exec my-distbox echo 2>&1)
     HOME=$HOME/distbox-home podman start my-distbox > /dev/null
-    if [ "$ERROR_NEED_DBUS_SETUP=" == "Error: can only create exec sessions on running containers: container state improper" ]; then
+    if [ "$ERROR_NEED_DBUS_SETUP" == "Error: can only create exec sessions on running containers: container state improper" ]; then
         dbus_setup
     fi
 
