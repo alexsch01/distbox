@@ -16,8 +16,6 @@ dbus_setup() {
     HOME=$HOME/distbox-home podman exec my-distbox rm -f /run/dbus/pid
     HOME=$HOME/distbox-home podman exec my-distbox dbus-daemon --system
     HOME=$HOME/distbox-home podman exec --user=$USER my-distbox dbus-daemon --session --address=unix:path=/run/user/$(id -u)/bus &
-    HOME=$HOME/distbox-home podman exec my-distbox rm -f /etc/machine-id
-    HOME=$HOME/distbox-home podman exec my-distbox dbus-uuidgen --ensure=/etc/machine-id
 }
 
 if [ "$1" = "install" ]; then
@@ -83,9 +81,13 @@ if [ "$1" = "install" ]; then
             --additional-packages 'google-noto-color-emoji-fonts google-noto-sans-mono-fonts dbus-daemon' -- ''
 
     HOME=$HOME/distbox-home ~/distbox-home/.local/bin/distrobox-enter my-distbox --no-workdir -- ''
+    rm ~/distbox-home/.local/bin/distrobox-enter
     HOME=$HOME/distbox-home podman exec my-distbox chown $USER: /run/user/$(id -u)
+
     HOME=$HOME/distbox-home podman exec my-distbox mkdir /run/dbus
     dbus_setup
+    HOME=$HOME/distbox-home podman exec my-distbox rm -f /etc/machine-id
+    HOME=$HOME/distbox-home podman exec my-distbox dbus-uuidgen --ensure=/etc/machine-id
 
     cp /etc/skel/.bashrc ~/distbox-home
     cp /etc/skel/.bash_profile ~/distbox-home
