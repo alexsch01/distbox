@@ -30,7 +30,7 @@ if [ "$1" = "install" ]; then
 
     echo '[storage]
 driver = "overlay"
-runroot = "$HOME/distbox-home/.config/containers/storage"' > ~/distbox-home/.config/containers/storage.conf
+runroot = "$HOME/.config/containers/storage"' > ~/distbox-home/.config/containers/storage.conf
 
     mkdir -p ~/distbox-home/.local/bin
 
