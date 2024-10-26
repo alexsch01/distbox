@@ -26,6 +26,12 @@ if [ "$1" = "install" ]; then
 
     uninstall_distbox
 
+    mkdir -p ~/distbox-home/.config/containers
+
+    echo '[storage]
+driver = "overlay"
+runroot = "$HOME/distbox-home/.config/containers/storage"' > ~/distbox-home/.config/containers/storage.conf
+
     mkdir -p ~/distbox-home/.local/bin
 
     ln -sf $XAUTHORITY /run/user/$(id -u)/distbox-X11-symlink
