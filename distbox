@@ -138,7 +138,7 @@ elif [ "$1" = "upgrade" ]; then
     fi
 
     HOME=$DISTBOX_HOME podman stop my-distbox 1> /dev/null 2> /dev/null
-    HOME=$DISTBOX_HOME podman pull image $DISTBOX_IMAGE
+    HOME=$DISTBOX_HOME podman image pull $DISTBOX_IMAGE
 elif [ "$1" = "stop" ]; then
     read -r -p "Do you want to stop your distbox? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
