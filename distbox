@@ -5,6 +5,7 @@ if ! command -v rpm-ostree &> /dev/null; then
     exit 1
 fi
 
+export DISTBOX_IMAGE=registry.fedoraproject.org/fedora-toolbox:latest
 export DISTBOX_HOME=$HOME/distbox-home
 
 uninstall_distbox() {
@@ -77,7 +78,7 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_HOME/.config/containers
         --annotation run.oci.keep_original_groups=1 \
         --ulimit host \
         --userns keep-id \
-        --entrypoint /usr/bin/entrypoint registry.fedoraproject.org/fedora-toolbox \
+        --entrypoint /usr/bin/entrypoint $DISTBOX_IMAGE \
             --verbose \
             --name $USER \
             --user $(id -u) \
@@ -130,6 +131,13 @@ elif [ "$1" = "run" ]; then
         su $USER --pty -c "XAUTHORITY=/run/user/$(id -u)/distbox-X11-symlink ${*: 2}"
 elif [ "$1" = "enter" ]; then
     distbox run bash
+elif [ "$1" = "upgrade" ]; then
+    read -r -p "Do you want to upgrade your distbox? [y/N] " response
+    if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+        exit
+    fi
+
+    HOME=$DISTBOX_HOME podman pull image $DISTBOX_IMAGE
 elif [ "$1" = "stop" ]; then
     read -r -p "Do you want to stop your distbox? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
@@ -149,6 +157,7 @@ else
     echo 'distbox install'
     echo 'distbox run COMMAND'
     echo 'distbox enter'
+    echo 'distbox upgrade'
     echo 'distbox stop'
     echo 'distbox uninstall'
 fi
