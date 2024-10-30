@@ -5,8 +5,8 @@ if ! command -v rpm-ostree &> /dev/null; then
     exit 1
 fi
 
-export DISTBOX_IMAGE=registry.fedoraproject.org/fedora-toolbox:latest
-export DISTBOX_HOME=$HOME/distbox-home
+DISTBOX_IMAGE=registry.fedoraproject.org/fedora-toolbox:latest
+DISTBOX_HOME=$HOME/distbox-home
 
 uninstall_distbox() {
     HOME=$DISTBOX_HOME podman stop my-distbox 1> /dev/null 2> /dev/null
