@@ -22,6 +22,8 @@ enter your distbox (alias for distbox run bash) - `distbox enter`
 
 upgrade your distbox - `distbox upgrade`
 
+upgrade your distbox to the next version of Fedora - `distbox upgrade-next`
+
 stop your distbox - `distbox stop`
 
 uninstall your distbox - `distbox uninstall`
