@@ -139,6 +139,25 @@ elif [ "$1" = "upgrade" ]; then
 
     HOME=$DISTBOX_HOME podman stop my-distbox 1> /dev/null 2> /dev/null
     HOME=$DISTBOX_HOME podman image pull $DISTBOX_IMAGE
+elif [ "$1" = "upgrade-next" ]; then
+    HOME=$DISTBOX_HOME podman start my-distbox > /dev/null || exit
+    NEXT_FEDORA=$(HOME=$DISTBOX_HOME podman exec my-distbox cat /etc/os-release | grep VERSION_ID)
+    NEXT_FEDORA=$((${NEXT_FEDORA//VERSION_ID=/} + 1))
+
+    read -r -p "Do you want to upgrade your distbox to Fedora $NEXT_FEDORA? [y/N] " response
+    if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+        exit
+    fi
+
+    HOME=$DISTBOX_HOME podman stop my-distbox 1> /dev/null 2> /dev/null
+    HOME=$DISTBOX_HOME podman image pull $DISTBOX_IMAGE
+
+    HOME=$DISTBOX_HOME podman start my-distbox > /dev/null
+    HOME=$DISTBOX_HOME podman exec my-distbox dnf update --refresh
+    HOME=$DISTBOX_HOME podman exec my-distbox dnf system-upgrade download --releasever=$NEXT_FEDORA -y
+    HOME=$DISTBOX_HOME podman exec my-distbox dnf system-upgrade reboot 2> /dev/null
+    HOME=$DISTBOX_HOME podman exec my-distbox dnf system-upgrade upgrade
+    HOME=$DISTBOX_HOME podman stop my-distbox 1> /dev/null 2> /dev/null
 elif [ "$1" = "stop" ]; then
     read -r -p "Do you want to stop your distbox? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
@@ -159,6 +178,7 @@ else
     echo 'distbox run COMMAND'
     echo 'distbox enter'
     echo 'distbox upgrade'
+    echo 'distbox upgrade-next'
     echo 'distbox stop'
     echo 'distbox uninstall'
 fi
