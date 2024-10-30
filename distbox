@@ -144,6 +144,8 @@ elif [ "$1" = "upgrade-next" ]; then
     NEXT_FEDORA=$(HOME=$DISTBOX_HOME podman exec my-distbox cat /etc/os-release | grep VERSION_ID)
     NEXT_FEDORA=$((${NEXT_FEDORA//VERSION_ID=/} + 1))
 
+    curl "https://dl.fedoraproject.org/pub/fedora/imagelist-fedora" 2> /dev/null | grep "releases/$NEXT_FEDORA" 1> /dev/null || echo "Fedora $NEXT_FEDORA is not released" && exit
+
     read -r -p "Do you want to upgrade your distbox to Fedora $NEXT_FEDORA? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
         exit
