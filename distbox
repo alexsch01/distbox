@@ -18,7 +18,7 @@ uninstall_distbox() {
 dbus_setup() {
     HOME=$DISTBOX_HOME podman exec my-distbox rm -f /run/dbus/pid
     HOME=$DISTBOX_HOME podman exec my-distbox dbus-daemon --system
-    HOME=$DISTBOX_HOME podman exec --user=$USER my-distbox dbus-daemon --session --address=unix:path=/run/user/$(id -u)/bus &
+    HOME=$DISTBOX_HOME podman exec --user=$USER my-distbox dbus-daemon --session --address=unix:path=/run/user/$(id -u)/bus 2> /dev/null &
 }
 
 if [ "$1" = "install" ]; then
