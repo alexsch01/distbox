@@ -142,6 +142,7 @@ elif [ "$1" = "upgrade" ]; then
     NEXT_FEDORA=$((${NEXT_FEDORA//VERSION_ID=/} + 1))
 
     curl "https://dl.fedoraproject.org/pub/fedora/imagelist-fedora" 2> /dev/null | grep "releases/$NEXT_FEDORA" 1> /dev/null || {
+        echo $'\nNo upgrade available'
         exit;
     }
 
