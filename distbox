@@ -140,9 +140,10 @@ elif [ "$1" = "upgrade" ]; then
 
     distbox run || exit
     HOME=$DISTBOX_HOME podman exec my-distbox dnf upgrade --refresh -y
-    echo y | distbox stop 1> /dev/null
 
+    echo y | distbox stop 1> /dev/null
     distbox run
+
     NEXT_FEDORA=$(HOME=$DISTBOX_HOME podman exec my-distbox cat /etc/os-release | grep VERSION_ID)
     NEXT_FEDORA=$((${NEXT_FEDORA//VERSION_ID=/} + 1))
 
