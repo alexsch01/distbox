@@ -9,7 +9,7 @@ DISTBOX_IMAGE=registry.fedoraproject.org/fedora-toolbox:latest
 DISTBOX_HOME=$HOME/distbox-home
 
 uninstall_distbox() {
-    HOME=$DISTBOX_HOME podman stop my-distbox 1> /dev/null 2> /dev/null
+    echo y | distbox stop 1> /dev/null 2> /dev/null
     HOME=$DISTBOX_HOME podman unshare chown root: -R $DISTBOX_HOME/.local/share/containers/storage 2> /dev/null
     HOME=$DISTBOX_HOME podman unshare rm -rf $DISTBOX_HOME 2> /dev/null
     rm -rf $DISTBOX_HOME
@@ -103,7 +103,7 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_HOME/.config/containers
     cp /etc/skel/.bash_profile $DISTBOX_HOME
 elif [ "$1" = "run" ]; then
     if [ "$(readlink -f /run/user/$(id -u)/distbox-X11-symlink)" != "$XAUTHORITY" ]; then
-        HOME=$DISTBOX_HOME podman stop my-distbox 1> /dev/null
+        echo y | distbox stop 1> /dev/null
         ln -sf $XAUTHORITY /run/user/$(id -u)/distbox-X11-symlink
     fi
 
@@ -139,20 +139,23 @@ elif [ "$1" = "upgrade" ]; then
     fi
 
     distbox run || exit
+    HOME=$DISTBOX_HOME podman exec my-distbox dnf upgrade --refresh -y
+    echo y | distbox stop 1> /dev/null
+
+    distbox run
     NEXT_FEDORA=$(HOME=$DISTBOX_HOME podman exec my-distbox cat /etc/os-release | grep VERSION_ID)
     NEXT_FEDORA=$((${NEXT_FEDORA//VERSION_ID=/} + 1))
 
     curl "https://dl.fedoraproject.org/pub/fedora/imagelist-fedora" 2> /dev/null | grep "releases/$NEXT_FEDORA" 1> /dev/null || {
-        echo $'\nNo upgrade available'
         exit;
     }
 
-    HOME=$DISTBOX_HOME podman exec my-distbox dnf update --refresh
     HOME=$DISTBOX_HOME podman exec my-distbox dnf system-upgrade download --releasever=$NEXT_FEDORA -y
     HOME=$DISTBOX_HOME podman exec my-distbox dnf system-upgrade reboot 2> /dev/null
     HOME=$DISTBOX_HOME podman exec my-distbox dnf system-upgrade upgrade
 
-    HOME=$DISTBOX_HOME podman stop my-distbox 1> /dev/null 2> /dev/null
+    echo y | distbox stop 1> /dev/null
+    distbox run
 elif [ "$1" = "stop" ]; then
     read -r -p "Do you want to stop your distbox? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
