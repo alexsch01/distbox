@@ -8,14 +8,12 @@ fi
 DISTBOX_IMAGE=registry.fedoraproject.org/fedora-toolbox:latest
 
 DISTBOX_HOME=$HOME/distbox-home
-DISTBOX_NAME=my-distbox
 DISTBOX_CONTAINER_ID=my-distbox
 
 if [ "$DISTBOX_CUSTOM" != "" ]; then
     if grep '^[-_0-9a-zA-Z]*$' <<< $DISTBOX_CUSTOM 1> /dev/null; then
         DISTBOX_HOME=$HOME/distbox-custom/$DISTBOX_CUSTOM
-        DISTBOX_NAME=custom/$DISTBOX_CUSTOM
-        DISTBOX_CONTAINER_ID=$DISTBOX_CUSTOM
+        DISTBOX_CONTAINER_ID=custom/$DISTBOX_CUSTOM
     else
         echo "DISTBOX_CUSTOM is invalid"
         exit 1
@@ -36,7 +34,7 @@ dbus_setup() {
 }
 
 if [ "$1" = "install" ]; then
-    read -r -p "Do you want to install/replace [$DISTBOX_NAME]? [y/N] " response
+    read -r -p "Do you want to install/replace [$DISTBOX_CONTAINER_ID]? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
         exit
     fi
@@ -147,7 +145,7 @@ elif [ "$1" = "run" ]; then
 elif [ "$1" = "enter" ]; then
     distbox run bash
 elif [ "$1" = "upgrade" ]; then
-    read -r -p "Do you want to upgrade [$DISTBOX_NAME]? [y/N] " response
+    read -r -p "Do you want to upgrade [$DISTBOX_CONTAINER_ID]? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
         exit
     fi
@@ -172,14 +170,14 @@ elif [ "$1" = "upgrade" ]; then
     echo y | distbox stop 1> /dev/null
     distbox run
 elif [ "$1" = "stop" ]; then
-    read -r -p "Do you want to stop [$DISTBOX_NAME]? [y/N] " response
+    read -r -p "Do you want to stop [$DISTBOX_CONTAINER_ID]? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
         exit
     fi
 
     HOME=$DISTBOX_HOME podman stop my-distbox
 elif [ "$1" = "uninstall" ]; then
-    read -r -p "Do you want to uninstall [$DISTBOX_NAME]? [y/N] " response
+    read -r -p "Do you want to uninstall [$DISTBOX_CONTAINER_ID]? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
         exit
     fi
