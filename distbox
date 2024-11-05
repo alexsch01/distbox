@@ -145,6 +145,14 @@ elif [ "$1" = "run" ]; then
         su $USER --pty -c "XAUTHORITY=/run/user/$(id -u)/distbox-X11-symlink ${*: 2}"
 elif [ "$1" = "enter" ]; then
     distbox run bash
+elif [ "$1" = "backup" ]; then
+    read -r -p "Do you want to (override) backup [$DISTBOX_CONTAINER_ID]? [y/N] " response
+    if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+        exit
+    fi
+
+    HOME=$DISTBOX_HOME podman unshare rm -rf $DISTBOX_HOME-backup
+    HOME=$DISTBOX_HOME podman unshare cp -R -a $DISTBOX_HOME $DISTBOX_HOME-backup
 elif [ "$1" = "upgrade" ]; then
     read -r -p "Do you want to upgrade [$DISTBOX_CONTAINER_ID]? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
@@ -189,6 +197,7 @@ else
     echo 'distbox install'
     echo 'distbox run COMMAND'
     echo 'distbox enter'
+    echo 'distbox backup'
     echo 'distbox upgrade'
     echo 'distbox stop'
     echo 'distbox uninstall'
