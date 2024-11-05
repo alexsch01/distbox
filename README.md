@@ -20,6 +20,8 @@ run your distbox - `distbox run COMMAND`
 
 enter your distbox (alias for distbox run bash) - `distbox enter`
 
+backup your distbox - `distbox backup`
+
 upgrade your distbox - `distbox upgrade`
 
 stop your distbox - `distbox stop`
