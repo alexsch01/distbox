@@ -111,7 +111,6 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_HOME/.config/containers
 elif [ "$1" = "run" ]; then
     cmp --silent $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11 || {
         echo y | distbox stop 1> /dev/null;
-        ln -sf $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11;
         cp $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11 2> /dev/null;
     }
 
