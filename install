@@ -1,11 +1,5 @@
 #!/bin/sh
 
-if ! command -v rpm-ostree &> /dev/null
-then
-    echo "rpm-ostree could not be found"
-    exit 1
-fi
-
 mkdir -p ~/.local/bin
 curl -s https://raw.githubusercontent.com/alexsch01/distbox/main/distbox > ~/.local/bin/distbox
 chmod +x ~/.local/bin/distbox
