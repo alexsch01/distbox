@@ -1,10 +1,5 @@
 #!/bin/sh
 
-if ! command -v rpm-ostree &> /dev/null; then
-    echo "rpm-ostree could not be found"
-    exit 1
-fi
-
 DISTBOX_IMAGE=registry.fedoraproject.org/fedora-toolbox:latest
 
 DISTBOX_HOME=$HOME/distbox-home
@@ -79,7 +74,6 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_HOME/.config/containers
         --volume /sys:/sys:ro \
         --volume /dev/pts \
         --volume /dev/null:/dev/ptmx \
-        --volume /sys/fs/selinux \
         --volume /var/log/journal \
         --volume /run/user/$(id -u)/wayland-0:/run/user/$(id -u)/wayland-0:ro \
         --volume /run/user/$(id -u)/pipewire-0:/run/user/$(id -u)/pipewire-0:ro \
@@ -133,9 +127,8 @@ elif [ "$1" = "run" ]; then
         --workdir=/home/$USER \
         --env HISTCONTROL=ignoredups \
         --env HISTSIZE=1000 \
-        --env XDG_SESSION_TYPE=wayland \
+        --env XDG_SESSION_TYPE=$XDG_SESSION_TYPE \
         --env LANG=$LANG \
-        --env WAYLAND_DISPLAY=wayland-0 \
         --env DISPLAY=:0 \
         --env XDG_RUNTIME_DIR=/run/user/$(id -u) \
         --env TZ=$(timedatectl show --va -p Timezone) \

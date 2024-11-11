@@ -1,6 +1,10 @@
 # distbox
 
-ONLY for Fedora Atomic Desktops (Silverblue, Kinoite, etc)
+fedora distrobox with the following being sandboxed
+
+- Home directory
+- Environment variables
+---
 
 X11 and Wayland Apps work
 
