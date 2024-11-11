@@ -25,7 +25,7 @@ uninstall_distbox() {
 dbus_setup() {
     HOME=$DISTBOX_HOME podman exec my-distbox rm -f /run/dbus/pid
     HOME=$DISTBOX_HOME podman exec my-distbox dbus-daemon --system
-    HOME=$DISTBOX_HOME podman exec --user=$USER my-distbox dbus-daemon --session --address=unix:path=/run/user/$(id -u)/bus 2> /dev/null &
+    HOME=$DISTBOX_HOME podman exec --user=$USER my-distbox dbus-daemon --session --address=unix:path=$XDG_RUNTIME_DIR/bus 2> /dev/null &
 }
 
 if [ "$1" = "install" ]; then
@@ -44,7 +44,7 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_HOME/.config/containers
 
     mkdir -p $DISTBOX_HOME/.local/bin
 
-    ln -sf $XAUTHORITY /run/user/$(id -u)/distbox-X11-symlink
+    ln -sf $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11-symlink
 
     curl -s https://raw.githubusercontent.com/alexsch01/distbox-distrobox/main/distrobox-enter > $DISTBOX_HOME/.local/bin/distrobox-enter
     curl -s https://raw.githubusercontent.com/alexsch01/distbox-distrobox/main/distrobox-init > $DISTBOX_HOME/.local/bin/distrobox-init
@@ -75,9 +75,9 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_HOME/.config/containers
         --volume /dev/pts \
         --volume /dev/null:/dev/ptmx \
         --volume /var/log/journal \
-        --volume /run/user/$(id -u)/wayland-0:/run/user/$(id -u)/wayland-0:ro \
-        --volume /run/user/$(id -u)/pipewire-0:/run/user/$(id -u)/pipewire-0:ro \
-        --volume /run/user/$(id -u)/distbox-X11-symlink:/run/user/$(id -u)/distbox-X11-symlink:ro \
+        --volume $XDG_RUNTIME_DIR/wayland-0:$XDG_RUNTIME_DIR/wayland-0:ro \
+        --volume $XDG_RUNTIME_DIR/pipewire-0:$XDG_RUNTIME_DIR/pipewire-0:ro \
+        --volume $XDG_RUNTIME_DIR/distbox-X11-symlink:$XDG_RUNTIME_DIR/$(id -u)/distbox-X11-symlink:ro \
         --volume /etc/hosts:/etc/hosts:ro \
         --volume /etc/resolv.conf:/etc/resolv.conf:ro \
         --volume /etc/hostname:/etc/hostname:ro \
@@ -98,7 +98,7 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_HOME/.config/containers
 
     HOME=$DISTBOX_HOME $DISTBOX_HOME/.local/bin/distrobox-enter my-distbox --no-workdir -- ''
     rm $DISTBOX_HOME/.local/bin/distrobox-enter
-    HOME=$DISTBOX_HOME podman exec my-distbox chown $USER: /run/user/$(id -u)
+    HOME=$DISTBOX_HOME podman exec my-distbox chown $USER: $XDG_RUNTIME_DIR
 
     HOME=$DISTBOX_HOME podman exec my-distbox mkdir /run/dbus
     dbus_setup
@@ -108,9 +108,9 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_HOME/.config/containers
     HOME=$DISTBOX_HOME podman exec my-distbox cp /etc/skel/.bashrc $HOME
     HOME=$DISTBOX_HOME podman exec my-distbox cp /etc/skel/.bash_profile $HOME
 elif [ "$1" = "run" ]; then
-    if [ "$(readlink -f /run/user/$(id -u)/distbox-X11-symlink)" != "$XAUTHORITY" ]; then
+    if [ "$(readlink -f $XDG_RUNTIME_DIR/distbox-X11-symlink)" != "$XAUTHORITY" ]; then
         echo y | distbox stop 1> /dev/null
-        ln -sf $XAUTHORITY /run/user/$(id -u)/distbox-X11-symlink
+        ln -sf $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11-symlink
     fi
 
     ERROR_NEED_DBUS_SETUP=$(HOME=$DISTBOX_HOME podman exec my-distbox echo 2>&1)
@@ -130,12 +130,12 @@ elif [ "$1" = "run" ]; then
         --env XDG_SESSION_TYPE=$XDG_SESSION_TYPE \
         --env LANG=$LANG \
         --env DISPLAY=:0 \
-        --env XDG_RUNTIME_DIR=/run/user/$(id -u) \
+        --env XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR \
         --env TZ=$(timedatectl show --va -p Timezone) \
-        --env DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus \
+        --env DBUS_SESSION_BUS_ADDRESS=unix:path=$XDG_RUNTIME_DIR/bus \
         --env HOSTNAME=$DISTBOX_CONTAINER_ID \
     my-distbox \
-        su $USER --pty -c "XAUTHORITY=/run/user/$(id -u)/distbox-X11-symlink ${*: 2}"
+        su $USER --pty -c "XAUTHORITY=$XDG_RUNTIME_DIR/distbox-X11-symlink ${*: 2}"
 elif [ "$1" = "enter" ]; then
     distbox run bash
 elif [ "$1" = "backup" ]; then
