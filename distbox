@@ -44,7 +44,7 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_HOME/.config/containers
 
     mkdir -p $DISTBOX_HOME/.local/bin
 
-    ln -sf $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11-symlink
+    cp $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11-symlink
 
     curl -s https://raw.githubusercontent.com/alexsch01/distbox-distrobox/main/distrobox-enter > $DISTBOX_HOME/.local/bin/distrobox-enter
     curl -s https://raw.githubusercontent.com/alexsch01/distbox-distrobox/main/distrobox-init > $DISTBOX_HOME/.local/bin/distrobox-init
@@ -111,7 +111,7 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_HOME/.config/containers
 elif [ "$1" = "run" ]; then
     if [ "$(readlink -f $XDG_RUNTIME_DIR/distbox-X11-symlink)" != "$XAUTHORITY" ]; then
         echo y | distbox stop 1> /dev/null
-        ln -sf $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11-symlink
+        cp $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11-symlink
     fi
 
     ERROR_NEED_DBUS_SETUP=$(HOME=$DISTBOX_HOME podman exec my-distbox echo 2>&1)
