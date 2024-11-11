@@ -77,7 +77,7 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_HOME/.config/containers
         --volume /var/log/journal \
         --volume $XDG_RUNTIME_DIR/wayland-0:$XDG_RUNTIME_DIR/wayland-0:ro \
         --volume $XDG_RUNTIME_DIR/pipewire-0:$XDG_RUNTIME_DIR/pipewire-0:ro \
-        --volume $XDG_RUNTIME_DIR/distbox-X11-symlink:$XDG_RUNTIME_DIR/$(id -u)/distbox-X11-symlink:ro \
+        --volume $XDG_RUNTIME_DIR/distbox-X11-symlink:$XDG_RUNTIME_DIR/distbox-X11-symlink:ro \
         --volume /etc/hosts:/etc/hosts:ro \
         --volume /etc/resolv.conf:/etc/resolv.conf:ro \
         --volume /etc/hostname:/etc/hostname:ro \
