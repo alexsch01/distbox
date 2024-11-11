@@ -6,7 +6,7 @@ fedora distrobox with the following being sandboxed
 - Environment variables
 ---
 
-X11 and Wayland Apps work
+X11 Apps work
 
 host system survives when `sudo rm -rf / --no-preserve-root` is run in the distbox
 
