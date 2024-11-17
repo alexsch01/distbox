@@ -3,4 +3,13 @@
 mkdir -p ~/.local/bin
 curl -s https://raw.githubusercontent.com/alexsch01/distbox/main/distbox > ~/.local/bin/distbox
 chmod +x ~/.local/bin/distbox
-echo "$HOME/.local/bin needs to be in the PATH variable"
+
+rm -rf $HOME/.distbox-helpers
+mkdir -p $HOME/.distbox-helpers
+curl -s https://raw.githubusercontent.com/alexsch01/distbox-distrobox/main/distrobox-enter > $HOME/.distbox-helpers/distrobox-enter
+curl -s https://raw.githubusercontent.com/alexsch01/distbox-distrobox/main/distrobox-init > $HOME/.distbox-helpers/distrobox-init
+chmod +x $HOME/.distbox-helpers/distrobox-enter
+chmod +x $HOME/.distbox-helpers/distrobox-init
+
+echo "distbox program install finished"
+echo "- $HOME/.local/bin needs to be in the PATH variable"
