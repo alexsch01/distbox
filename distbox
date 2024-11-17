@@ -17,9 +17,12 @@ fi
 
 uninstall_distbox() {
     echo y | distbox stop 1> /dev/null 2> /dev/null
+
     HOME=$DISTBOX_HOME podman unshare chown root: -R $DISTBOX_HOME/.local/share/containers/storage 2> /dev/null
     HOME=$DISTBOX_HOME podman unshare rm -rf $DISTBOX_HOME 2> /dev/null
     rm -rf $DISTBOX_HOME
+
+    rm -rf $HOME/.distbox-helpers/$DISTBOX_CONTAINER_ID
 }
 
 dbus_setup() {
@@ -42,15 +45,16 @@ if [ "$1" = "install" ]; then
 driver = "overlay"
 runroot = "$HOME/.config/containers/storage"' > $DISTBOX_HOME/.config/containers/storage.conf
 
-    mkdir -p $DISTBOX_HOME/.local/bin
+    rm -rf $HOME/.distbox-helpers/$DISTBOX_CONTAINER_ID
+    mkdir -p $HOME/.distbox-helpers/$DISTBOX_CONTAINER_ID
 
     cp $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11 2> /dev/null
     touch -a $XDG_RUNTIME_DIR/wayland-0
 
-    curl -s https://raw.githubusercontent.com/alexsch01/distbox-distrobox/main/distrobox-enter > $DISTBOX_HOME/.local/bin/distrobox-enter
-    curl -s https://raw.githubusercontent.com/alexsch01/distbox-distrobox/main/distrobox-init > $DISTBOX_HOME/.local/bin/distrobox-init
+    curl -s https://raw.githubusercontent.com/alexsch01/distbox-distrobox/main/distrobox-enter > $HOME/.distbox-helpers/$DISTBOX_CONTAINER_ID/distrobox-enter
+    curl -s https://raw.githubusercontent.com/alexsch01/distbox-distrobox/main/distrobox-init > $HOME/.distbox-helpers/$DISTBOX_CONTAINER_ID/distrobox-init
 
-    chmod +x $DISTBOX_HOME/.local/bin/distrobox-*
+    chmod +x $HOME/.distbox-helpers/$DISTBOX_CONTAINER_ID/distrobox-*
 
     HOME=$DISTBOX_HOME podman create \
         --hostname $HOSTNAME \
@@ -69,7 +73,7 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_HOME/.config/containers
         --env container=podman \
         --env TERMINFO_DIRS=/usr/share/terminfo \
         --env CONTAINER_ID=$DISTBOX_CONTAINER_ID \
-        --volume $DISTBOX_HOME/.local/bin/distrobox-init:/usr/bin/entrypoint:ro \
+        --volume $HOME/.distbox-helpers/$DISTBOX_CONTAINER_ID/distrobox-init:/usr/bin/entrypoint:ro \
         --volume $DISTBOX_HOME:/home/$USER \
         --volume /dev:/dev:ro \
         --volume /sys:/sys:ro \
@@ -97,8 +101,8 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_HOME/.config/containers
             --additional-packages 'google-noto-color-emoji-fonts google-noto-sans-mono-fonts dbus-daemon libglvnd-gles' -- '' || exit
     HOME=$DISTBOX_HOME podman untag $DISTBOX_IMAGE
 
-    HOME=$DISTBOX_HOME $DISTBOX_HOME/.local/bin/distrobox-enter my-distbox --no-workdir -- ''
-    rm $DISTBOX_HOME/.local/bin/distrobox-enter
+    HOME=$DISTBOX_HOME $HOME/.distbox-helpers/$DISTBOX_CONTAINER_ID/distrobox-enter my-distbox --no-workdir -- ''
+    rm $HOME/.distbox-helpers/$DISTBOX_CONTAINER_ID/distrobox-enter
     HOME=$DISTBOX_HOME podman exec my-distbox chown $USER: $XDG_RUNTIME_DIR
 
     HOME=$DISTBOX_HOME podman exec my-distbox mkdir /run/dbus
