@@ -17,11 +17,7 @@ fi
 
 uninstall_distbox() {
     echo y | distbox stop 1> /dev/null 2> /dev/null
-
-    HOME=$DISTBOX_HOME podman unshare chown root: -R $DISTBOX_HOME/.local/share/containers/storage 2> /dev/null
-    HOME=$DISTBOX_HOME podman unshare rm -rf $DISTBOX_HOME 2> /dev/null
-    rm -rf $DISTBOX_HOME
-
+    podman unshare rm -rf $DISTBOX_HOME
     rm -rf $HOME/.distbox-helpers/$DISTBOX_CONTAINER_ID
 }
 
@@ -150,8 +146,8 @@ elif [ "$1" = "backup" ]; then
     fi
 
     echo y | distbox stop 1> /dev/null
-    HOME=$DISTBOX_HOME podman unshare rm -rf $DISTBOX_HOME@backup
-    HOME=$DISTBOX_HOME podman unshare cp -R -a $DISTBOX_HOME $DISTBOX_HOME@backup
+    podman unshare rm -rf $DISTBOX_HOME@backup
+    podman unshare cp -R -a $DISTBOX_HOME $DISTBOX_HOME@backup
 elif [ "$1" = "upgrade" ]; then
     read -r -p "Do you want to upgrade [$DISTBOX_CONTAINER_ID]? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
