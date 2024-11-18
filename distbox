@@ -5,11 +5,6 @@ DISTBOX_IMAGE=registry.fedoraproject.org/fedora-toolbox:latest
 DISTBOX_HOME=$HOME/distbox-home
 DISTBOX_CONTAINER_ID=my-distbox
 
-if [ ! -d "$HOME/.distbox-helpers" ]; then
-    echo "distbox program not installed properly"
-    exit 1
-fi
-
 if [ "$DISTBOX_CUSTOM" != "" ]; then
     if grep '^[-_0-9a-zA-Z]*$' <<< $DISTBOX_CUSTOM 1> /dev/null; then
         DISTBOX_HOME=$HOME/distbox-custom/$DISTBOX_CUSTOM
