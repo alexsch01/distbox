@@ -15,11 +15,6 @@ if [ "$DISTBOX_CUSTOM" != "" ]; then
     fi
 fi
 
-uninstall_distbox() {
-    echo y | distbox stop 1> /dev/null 2> /dev/null
-    podman unshare rm -rf $DISTBOX_HOME
-}
-
 dbus_setup() {
     HOME=$DISTBOX_HOME podman exec my-distbox rm -f /run/dbus/pid
     HOME=$DISTBOX_HOME podman exec my-distbox dbus-daemon --system
@@ -32,7 +27,7 @@ if [ "$1" = "install" ]; then
         exit
     fi
 
-    uninstall_distbox
+    echo y | distbox uninstall
 
     mkdir -p $DISTBOX_HOME/.config/containers
 
@@ -176,7 +171,8 @@ elif [ "$1" = "uninstall" ]; then
         exit
     fi
 
-    uninstall_distbox
+    echo y | distbox stop 1> /dev/null 2> /dev/null
+    podman unshare rm -rf $DISTBOX_HOME
 else
     echo $'Valid commands: \n'
     echo 'distbox install'
