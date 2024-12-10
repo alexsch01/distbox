@@ -172,7 +172,10 @@ elif [ "$1" = "uninstall" ]; then
     fi
 
     echo y | distbox stop 1> /dev/null 2> /dev/null
-    podman unshare rm -rf $DISTBOX_HOME
+
+    podman unshare chown root: -R $DISTBOX_HOME/.local/share/containers/storage 2> /dev/null
+    podman unshare rm -rf $DISTBOX_HOME 2> /dev/null
+    rm -rf $DISTBOX_HOME
 else
     echo $'Valid commands: \n'
     echo 'distbox install'
