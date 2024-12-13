@@ -8,7 +8,7 @@ DISTBOX_CONTAINER_ID=my-distbox
 if [ "$DISTBOX_CUSTOM" != "" ]; then
     if grep '^[-_0-9a-zA-Z]*$' <<< $DISTBOX_CUSTOM 1> /dev/null; then
         DISTBOX_HOME=$HOME/distbox-custom/$DISTBOX_CUSTOM
-        DISTBOX_CONTAINER_ID=custom/$DISTBOX_CUSTOM
+        DISTBOX_CONTAINER_ID=distbox-custom:$DISTBOX_CUSTOM
     else
         echo "DISTBOX_CUSTOM is invalid"
         exit 1
