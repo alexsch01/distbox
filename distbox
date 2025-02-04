@@ -91,7 +91,7 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_HOME/.config/containers
     HOME=$DISTBOX_HOME podman exec my-distbox rm -f /etc/machine-id
     HOME=$DISTBOX_HOME podman exec my-distbox dbus-uuidgen --ensure=/etc/machine-id
 
-    HOME=$DISTBOX_HOME podman exec --user=$USER --env DISPLAY=:0 my-distbox gsettings set org.gnome.desktop.wm.preferences button-layout ":minimize,maximize,close"
+    distbox run gsettings set org.gnome.desktop.wm.preferences button-layout ":minimize,maximize,close"
 
     HOME=$DISTBOX_HOME podman exec --user=$USER my-distbox cp /etc/skel/.bashrc $HOME
 elif [ "$1" = "run" ]; then
