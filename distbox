@@ -91,15 +91,10 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_HOME/.config/containers
     HOME=$DISTBOX_HOME podman exec my-distbox rm -f /etc/machine-id
     HOME=$DISTBOX_HOME podman exec my-distbox dbus-uuidgen --ensure=/etc/machine-id
 
-    # uses dbus
-    HOME=$DISTBOX_HOME podman exec \
-        --user=$USER \
-        --env DISPLAY=:0 \
-        --env DBUS_SESSION_BUS_ADDRESS=unix:path=$XDG_RUNTIME_DIR/bus \
-    my-distbox \
-        gsettings set org.gnome.desktop.wm.preferences button-layout ":minimize,maximize,close"
-
     HOME=$DISTBOX_HOME podman exec --user=$USER my-distbox cp /etc/skel/.bashrc $HOME
+
+    distbox run gsettings set org.gnome.desktop.wm.preferences button-layout ":minimize,maximize,close"
+    HOME=$DISTBOX_HOME podman exec my-distbox pkill dconf-service
 elif [ "$1" = "run" ]; then
     cmp --silent $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11 || {
         echo y | distbox stop 1> /dev/null;
