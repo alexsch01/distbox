@@ -121,7 +121,7 @@ elif [ "$1" = "run" ]; then
         --env HISTSIZE=1000 \
         --env XDG_SESSION_TYPE=$XDG_SESSION_TYPE \
         --env LANG=$LANG \
-        --env DISPLAY=:0 \
+        --env DISPLAY=$DISPLAY \
         --env XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR \
         --env TZ=$(timedatectl show --va -p Timezone) \
         --env DBUS_SESSION_BUS_ADDRESS=unix:path=$XDG_RUNTIME_DIR/bus \
