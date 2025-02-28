@@ -111,6 +111,11 @@ elif [ "$1" = "run" ]; then
         dbus_setup
     fi
 
+    DISTBOX_WAYLAND_DISPLAY_ENV=""
+    if [ "$WAYLAND_DISPLAY" != "" ]; then
+        DISTBOX_WAYLAND_DISPLAY_ENV="--env WAYLAND_DISPLAY=$WAYLAND_DISPLAY"
+    fi
+
     HOME=$DISTBOX_HOME podman exec \
         --interactive \
         --detach-keys= \
@@ -126,10 +131,9 @@ elif [ "$1" = "run" ]; then
         --env TZ=$(timedatectl show --va -p Timezone) \
         --env DBUS_SESSION_BUS_ADDRESS=unix:path=$XDG_RUNTIME_DIR/bus \
         --env HOSTNAME=$DISTBOX_CONTAINER_ID \
-        --env WAYLAND_DISPLAY=$WAYLAND_DISPLAY \
-        --env XAUTHORITY=$XDG_RUNTIME_DIR/distbox-X11 \
+        $DISTBOX_WAYLAND_DISPLAY_ENV \
     my-distbox \
-        su $USER --pty -c "${*: 2}"
+        su $USER --pty -c "XAUTHORITY=$XDG_RUNTIME_DIR/distbox-X11 ${*: 2}"
 elif [ "$1" = "enter" ]; then
     distbox run bash
 elif [ "$1" = "backup" ]; then
