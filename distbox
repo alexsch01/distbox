@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 DISTBOX_IMAGE=registry.fedoraproject.org/fedora-toolbox:latest
 
