@@ -103,7 +103,6 @@ elif [ "$1" = "run" ]; then
     cmp --silent $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11 || {
         echo y | distbox stop 1> /dev/null;
         cp $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11;
-        touch -a $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY;
     }
 
     ERROR_NEED_DBUS_SETUP=$(HOME=$DISTBOX_HOME podman exec my-distbox echo 2>&1)
