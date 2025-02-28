@@ -36,7 +36,11 @@ driver = "overlay"
 runroot = "$HOME/.config/containers/storage"' > $DISTBOX_HOME/.config/containers/storage.conf
 
     cp $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11 2> /dev/null
-    touch -a $XDG_RUNTIME_DIR/wayland-0
+
+    if [ "$WAYLAND_DISPLAY" != "" ]; then
+        WAYLAND_DISPLAY=wayland-0
+        touch -a $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY
+    fi
 
     HOME=$DISTBOX_HOME podman create \
         --hostname $HOSTNAME \
@@ -62,7 +66,7 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_HOME/.config/containers
         --volume /dev/pts \
         --volume /dev/null:/dev/ptmx \
         --volume /var/log/journal \
-        --volume $XDG_RUNTIME_DIR/wayland-0:$XDG_RUNTIME_DIR/wayland-0:ro \
+        --volume $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:ro \
         --volume $XDG_RUNTIME_DIR/pipewire-0:$XDG_RUNTIME_DIR/pipewire-0:ro \
         --volume $XDG_RUNTIME_DIR/distbox-X11:$XDG_RUNTIME_DIR/distbox-X11:ro \
         --volume /etc/hosts:/etc/hosts:ro \
@@ -99,7 +103,7 @@ elif [ "$1" = "run" ]; then
     cmp --silent $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11 || {
         echo y | distbox stop 1> /dev/null;
         cp $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11;
-        touch -a $XDG_RUNTIME_DIR/wayland-0;
+        touch -a $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY;
     }
 
     ERROR_NEED_DBUS_SETUP=$(HOME=$DISTBOX_HOME podman exec my-distbox echo 2>&1)
