@@ -35,11 +35,9 @@ if [ "$1" = "install" ]; then
 driver = "overlay"
 runroot = "$HOME/.config/containers/storage"' > $DISTBOX_HOME/.config/containers/storage.conf
 
-    cp $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11 2> /dev/null
-
+    DISTBOX_WAYLAND_VOLUME=""
     if [ "$WAYLAND_DISPLAY" != "" ]; then
-        WAYLAND_DISPLAY=wayland-0
-        touch -a $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY
+        DISTBOX_WAYLAND_VOLUME="--volume $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:ro"
     fi
 
     HOME=$DISTBOX_HOME podman create \
@@ -66,7 +64,7 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_HOME/.config/containers
         --volume /dev/pts \
         --volume /dev/null:/dev/ptmx \
         --volume /var/log/journal \
-        --volume $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:ro \
+        $DISTBOX_WAYLAND_VOLUME \
         --volume $XDG_RUNTIME_DIR/pipewire-0:$XDG_RUNTIME_DIR/pipewire-0:ro \
         --volume $XDG_RUNTIME_DIR/distbox-X11:$XDG_RUNTIME_DIR/distbox-X11:ro \
         --volume /etc/hosts:/etc/hosts:ro \
@@ -126,8 +124,10 @@ elif [ "$1" = "run" ]; then
         --env TZ=$(timedatectl show --va -p Timezone) \
         --env DBUS_SESSION_BUS_ADDRESS=unix:path=$XDG_RUNTIME_DIR/bus \
         --env HOSTNAME=$DISTBOX_CONTAINER_ID \
+        --env WAYLAND_DISPLAY=$WAYLAND_DISPLAY \
+        --env XAUTHORITY=$XDG_RUNTIME_DIR/distbox-X11 \
     my-distbox \
-        su $USER --pty -c "XAUTHORITY=$XDG_RUNTIME_DIR/distbox-X11 ${*: 2}"
+        su $USER --pty -c "${*: 2}"
 elif [ "$1" = "enter" ]; then
     distbox run bash
 elif [ "$1" = "backup" ]; then
