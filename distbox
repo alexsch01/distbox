@@ -154,6 +154,7 @@ elif [ "$1" = "upgrade" ]; then
 
     distbox run || exit
     distbox run sudo dnf upgrade --refresh -y
+    HOME=$DISTBOX_HOME podman exec my-distbox rm -rf $HOME/.gnupg
 
     echo y | distbox stop 1> /dev/null
     distbox run
@@ -167,6 +168,7 @@ elif [ "$1" = "upgrade" ]; then
 
     distbox run sudo dnf --releasever=$NEXT_FEDORA upgrade --refresh -y
     distbox run sudo dnf upgrade --refresh -y
+    HOME=$DISTBOX_HOME podman exec my-distbox rm -rf $HOME/.gnupg
 
     echo y | distbox stop 1> /dev/null
     distbox run
