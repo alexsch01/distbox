@@ -166,6 +166,7 @@ elif [ "$1" = "upgrade" ]; then
     }
 
     HOME=$DISTBOX_HOME podman exec my-distbox dnf --releasever=$NEXT_FEDORA upgrade --refresh -y
+    HOME=$DISTBOX_HOME podman exec my-distbox dnf upgrade -y
 
     echo y | distbox stop 1> /dev/null
     distbox run
