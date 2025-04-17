@@ -154,10 +154,9 @@ elif [ "$1" = "upgrade" ]; then
 
     distbox run || exit
     distbox run sudo dnf upgrade --refresh -y
-    HOME=$DISTBOX_HOME podman exec my-distbox rm -rf $HOME/.gnupg
 
     echo y | distbox stop 1> /dev/null
-    distbox run
+    distbox run sudo rm -rf $HOME/.gnupg
 
     NEXT_FEDORA=$(HOME=$DISTBOX_HOME podman exec my-distbox cat /etc/os-release | grep VERSION_ID)
     NEXT_FEDORA=$((${NEXT_FEDORA//VERSION_ID=/} + 1))
@@ -168,10 +167,9 @@ elif [ "$1" = "upgrade" ]; then
 
     distbox run sudo dnf --releasever=$NEXT_FEDORA upgrade --refresh -y
     distbox run sudo dnf upgrade --refresh -y
-    HOME=$DISTBOX_HOME podman exec my-distbox rm -rf $HOME/.gnupg
 
     echo y | distbox stop 1> /dev/null
-    distbox run
+    distbox run sudo rm -rf $HOME/.gnupg
 elif [ "$1" = "stop" ]; then
     read -r -p "Do you want to stop [$DISTBOX_CONTAINER_ID]? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
