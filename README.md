@@ -26,8 +26,6 @@ enter your distbox (alias for distbox run bash) - `distbox enter`
 
 backup your distbox - `distbox backup`
 
-upgrade your distbox - `distbox upgrade`
-
 stop your distbox - `distbox stop`
 
 uninstall your distbox - `distbox uninstall`
