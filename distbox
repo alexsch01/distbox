@@ -105,9 +105,10 @@ elif [ "$1" = "run" ]; then
         cp $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11;
     }
 
-    ERROR_NEED_DBUS_SETUP=$(HOME=$DISTBOX_HOME podman exec my-distbox echo 2>&1)
+    DISTBOX_OFFLINE=$(HOME=$DISTBOX_HOME podman exec my-distbox echo 2>&1)
     HOME=$DISTBOX_HOME podman start my-distbox > /dev/null
-    if [ "$ERROR_NEED_DBUS_SETUP" == "Error: can only create exec sessions on running containers: container state improper" ]; then
+    if [ "$DISTBOX_OFFLINE" == "Error: can only create exec sessions on running containers: container state improper" ]; then
+        sleep 3
         dbus_setup
     fi
 
