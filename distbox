@@ -146,30 +146,6 @@ elif [ "$1" = "backup" ]; then
     echo y | distbox stop 1> /dev/null
     podman unshare rm -rf $DISTBOX_HOME@backup
     podman unshare cp -R -a $DISTBOX_HOME $DISTBOX_HOME@backup
-elif [ "$1" = "upgrade" ]; then
-    read -r -p "Do you want to upgrade [$DISTBOX_CONTAINER_ID]? [y/N] " response
-    if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
-        exit
-    fi
-
-    distbox run || exit
-    distbox run sudo dnf upgrade --refresh -y
-
-    echo y | distbox stop 1> /dev/null
-    distbox run sudo rm -rf $HOME/.gnupg
-
-    NEXT_FEDORA=$(HOME=$DISTBOX_HOME podman exec my-distbox cat /etc/os-release | grep VERSION_ID)
-    NEXT_FEDORA=$((${NEXT_FEDORA//VERSION_ID=/} + 1))
-
-    curl "https://dl.fedoraproject.org/pub/fedora/imagelist-fedora" 2> /dev/null | grep "releases/$NEXT_FEDORA" 1> /dev/null || {
-        exit 0;
-    }
-
-    distbox run sudo dnf --releasever=$NEXT_FEDORA upgrade --refresh -y
-    distbox run sudo dnf upgrade --refresh -y
-
-    echo y | distbox stop 1> /dev/null
-    distbox run sudo rm -rf $HOME/.gnupg
 elif [ "$1" = "stop" ]; then
     read -r -p "Do you want to stop [$DISTBOX_CONTAINER_ID]? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
@@ -194,7 +170,6 @@ else
     echo 'distbox run COMMAND'
     echo 'distbox enter'
     echo 'distbox backup'
-    echo 'distbox upgrade'
     echo 'distbox stop'
     echo 'distbox uninstall'
 fi
