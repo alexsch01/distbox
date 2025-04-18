@@ -1,9 +1,7 @@
 #!/bin/bash
 
 DISTBOX_IMAGE=registry.fedoraproject.org/fedora-toolbox:latest
-
 DISTBOX_HOME=$HOME/distbox-home
-DISTBOX_CONTAINER_ID=my-distbox
 
 dbus_setup() {
     HOME=$DISTBOX_HOME podman exec my-distbox rm -f /run/dbus/pid
@@ -12,7 +10,7 @@ dbus_setup() {
 }
 
 if [ "$1" = "install" ]; then
-    read -r -p "Do you want to install/replace [$DISTBOX_CONTAINER_ID]? [y/N] " response
+    read -r -p "Do you want to install/replace your distbox? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
         exit
     fi
@@ -48,7 +46,7 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_HOME/.config/containers
         --env HOME=/home/$USER \
         --env container=podman \
         --env TERMINFO_DIRS=/usr/share/terminfo \
-        --env CONTAINER_ID=$DISTBOX_CONTAINER_ID \
+        --env CONTAINER_ID=my-distbox \
         --volume $HOME/.distbox-helpers/distrobox-init:/usr/bin/entrypoint:ro \
         --volume $DISTBOX_HOME:/home/$USER \
         --volume /dev:/dev:ro \
@@ -121,14 +119,13 @@ elif [ "$1" = "run" ]; then
         --env XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR \
         --env TZ=$(timedatectl show --va -p Timezone) \
         --env DBUS_SESSION_BUS_ADDRESS=unix:path=$XDG_RUNTIME_DIR/bus \
-        --env HOSTNAME=$DISTBOX_CONTAINER_ID \
         $DISTBOX_WAYLAND_DISPLAY_ENV \
     my-distbox \
         su $USER --pty -c "XAUTHORITY=$XDG_RUNTIME_DIR/distbox-X11 ${*: 2}"
 elif [ "$1" = "enter" ]; then
     distbox run bash
 elif [ "$1" = "backup" ]; then
-    read -r -p "Do you want to (override) backup [$DISTBOX_CONTAINER_ID]? [y/N] " response
+    read -r -p "Do you want to (override) backup your distbox? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
         exit
     fi
@@ -137,14 +134,14 @@ elif [ "$1" = "backup" ]; then
     podman unshare rm -rf $DISTBOX_HOME@backup
     podman unshare cp -R -a $DISTBOX_HOME $DISTBOX_HOME@backup
 elif [ "$1" = "stop" ]; then
-    read -r -p "Do you want to stop [$DISTBOX_CONTAINER_ID]? [y/N] " response
+    read -r -p "Do you want to stop your distbox? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
         exit
     fi
 
     HOME=$DISTBOX_HOME podman stop my-distbox
 elif [ "$1" = "uninstall" ]; then
-    read -r -p "Do you want to uninstall [$DISTBOX_CONTAINER_ID]? [y/N] " response
+    read -r -p "Do you want to uninstall your distbox? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
         exit
     fi
