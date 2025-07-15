@@ -49,17 +49,9 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_HOME/.config/containers
         --env CONTAINER_ID=my-distbox \
         --volume $HOME/.distbox-helpers/distrobox-init:/usr/bin/entrypoint:ro \
         --volume $DISTBOX_HOME:/home/$USER \
-        --volume /dev:/dev:ro \
-        --volume /sys:/sys:ro \
-        --volume /dev/pts \
-        --volume /dev/null:/dev/ptmx \
-        --volume /var/log/journal \
         $DISTBOX_WAYLAND_VOLUME \
         --volume $XDG_RUNTIME_DIR/pipewire-0:$XDG_RUNTIME_DIR/pipewire-0:ro \
         --volume $XDG_RUNTIME_DIR/distbox-X11:$XDG_RUNTIME_DIR/distbox-X11:ro \
-        --volume /etc/hosts:/etc/hosts:ro \
-        --volume /etc/resolv.conf:/etc/resolv.conf:ro \
-        --volume /etc/hostname:/etc/hostname:ro \
         --annotation run.oci.keep_original_groups=1 \
         --ulimit host \
         --userns keep-id \
@@ -97,7 +89,6 @@ elif [ "$1" = "run" ]; then
     DISTBOX_OFFLINE=$(HOME=$DISTBOX_HOME podman exec my-distbox echo 2>&1)
     HOME=$DISTBOX_HOME podman start my-distbox > /dev/null
     if [ "$DISTBOX_OFFLINE" == "Error: can only create exec sessions on running containers: container state improper" ]; then
-        sleep 3
         dbus_setup
     fi
 
