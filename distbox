@@ -51,8 +51,6 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_HOME/.config/containers
         $DISTBOX_WAYLAND_VOLUME \
         --volume $XDG_RUNTIME_DIR/pipewire-0:$XDG_RUNTIME_DIR/pipewire-0:ro \
         --volume $XDG_RUNTIME_DIR/distbox-X11:$XDG_RUNTIME_DIR/distbox-X11:ro \
-        --volume /etc/hosts:/etc/hosts:ro \
-        --volume /etc/resolv.conf:/etc/resolv.conf:ro \
         --annotation run.oci.keep_original_groups=1 \
         --ulimit host \
         --userns keep-id \
