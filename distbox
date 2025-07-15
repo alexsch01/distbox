@@ -53,7 +53,6 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_HOME/.config/containers
         --volume $XDG_RUNTIME_DIR/distbox-X11:$XDG_RUNTIME_DIR/distbox-X11:ro \
         --volume /etc/hosts:/etc/hosts:ro \
         --volume /etc/resolv.conf:/etc/resolv.conf:ro \
-        --volume /etc/hostname:/etc/hostname:ro \
         --annotation run.oci.keep_original_groups=1 \
         --ulimit host \
         --userns keep-id \
