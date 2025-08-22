@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 DISTBOX_IMAGE=registry.fedoraproject.org/fedora-toolbox:latest
 DISTBOX_HOME=$HOME/distbox-home
