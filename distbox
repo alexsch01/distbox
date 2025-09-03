@@ -1,8 +1,10 @@
 #!/bin/bash
 
 DISTBOX_IMAGE=registry.fedoraproject.org/fedora-toolbox:latest
-DISTBOX_PODMAN=$HOME/.distbox-podman
-DISTBOX_HOME=$HOME/distbox-home
+
+DISTBOX_FILES=$HOME/distbox-files
+DISTBOX_PODMAN=$DISTBOX_FILES/podman-files
+DISTBOX_HOME=$DISTBOX_FILES/HOME
 
 dbus_setup() {
     HOME=$DISTBOX_PODMAN podman exec my-distbox rm -f /run/dbus/pid
@@ -18,8 +20,7 @@ if [ "$1" = "install" ]; then
 
     echo y | distbox uninstall
 
-    mkdir -p $DISTBOX_PODMAN/.config/containers
-    mkdir $DISTBOX_HOME
+    mkdir -p $DISTBOX_PODMAN/.config/containers $DISTBOX_HOME
 
     echo '[storage]
 driver = "overlay"
@@ -124,8 +125,8 @@ elif [ "$1" = "backup" ]; then
     fi
 
     echo y | distbox stop 1> /dev/null
-    podman unshare rm -rf $DISTBOX_PODMAN@backup
-    podman unshare cp -R -a $DISTBOX_PODMAN $DISTBOX_PODMAN@backup
+    podman unshare rm -rf $DISTBOX_FILES@backup
+    podman unshare cp -R -a $DISTBOX_FILES $DISTBOX_FILES@backup
 elif [ "$1" = "stop" ]; then
     read -r -p "Do you want to stop your distbox? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
@@ -143,7 +144,7 @@ elif [ "$1" = "uninstall" ]; then
 
     podman unshare chown root: -R $DISTBOX_PODMAN/.local/share/containers/storage 2> /dev/null
     podman unshare rm -rf $DISTBOX_PODMAN 2> /dev/null
-    rm -rf $DISTBOX_PODMAN
+    rm -rf $DISTBOX_FILES
 else
     echo $'Valid commands: \n'
     echo 'distbox install'
