@@ -21,6 +21,7 @@ if [ "$1" = "install" ]; then
     echo y | distbox uninstall
 
     mkdir -p $DISTBOX_PODMAN/.config/containers $DISTBOX_HOME
+    touch $DISTBOX_PODMAN/THERE_ARE_FILES_HERE
 
     echo '[storage]
 driver = "overlay"
