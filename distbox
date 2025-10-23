@@ -27,12 +27,7 @@ if [ "$1" = "install" ]; then
 driver = "overlay"
 runroot = "$HOME/.config/containers/storage"' > $DISTBOX_PODMAN/.config/containers/storage.conf
 
-    cp $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11 2> /dev/null
-
-    DISTBOX_WAYLAND_VOLUME=""
-    if [ "$WAYLAND_DISPLAY" != "" ]; then
-        DISTBOX_WAYLAND_VOLUME="--volume $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:ro"
-    fi
+    ln -sf $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11-symlink
 
     HOME=$DISTBOX_PODMAN podman create \
         --hostname $HOSTNAME \
@@ -52,7 +47,7 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_PODMAN/.config/containe
         --env CONTAINER_ID=my-distbox \
         --volume $HOME/.distbox-helpers/distrobox-init:/usr/bin/entrypoint:ro \
         --volume $DISTBOX_HOME:/home/$USER \
-        $DISTBOX_WAYLAND_VOLUME \
+        --volume $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:ro \
         --volume $XDG_RUNTIME_DIR/pipewire-0:$XDG_RUNTIME_DIR/pipewire-0:ro \
         --volume $XDG_RUNTIME_DIR/distbox-X11:$XDG_RUNTIME_DIR/distbox-X11:ro \
         --annotation run.oci.keep_original_groups=1 \
@@ -87,18 +82,13 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_PODMAN/.config/containe
 elif [ "$1" = "run" ]; then
     cmp --silent $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11 || {
         echo y | distbox stop 1> /dev/null;
-        cp $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11;
+        ln -sf $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11-symlink;
     }
 
     DISTBOX_OFFLINE=$(HOME=$DISTBOX_PODMAN podman exec my-distbox echo 2>&1)
     HOME=$DISTBOX_PODMAN podman start my-distbox > /dev/null
     if [ "$DISTBOX_OFFLINE" == "Error: can only create exec sessions on running containers: container state improper" ]; then
         dbus_setup
-    fi
-
-    DISTBOX_WAYLAND_DISPLAY_ENV=""
-    if [ "$WAYLAND_DISPLAY" != "" ]; then
-        DISTBOX_WAYLAND_DISPLAY_ENV="--env WAYLAND_DISPLAY=$WAYLAND_DISPLAY"
     fi
 
     HOME=$DISTBOX_PODMAN podman exec \
@@ -115,7 +105,7 @@ elif [ "$1" = "run" ]; then
         --env XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR \
         --env TZ=$(timedatectl show --va -p Timezone) \
         --env DBUS_SESSION_BUS_ADDRESS=unix:path=$XDG_RUNTIME_DIR/bus \
-        $DISTBOX_WAYLAND_DISPLAY_ENV \
+        --env WAYLAND_DISPLAY=$WAYLAND_DISPLAY \
     my-distbox \
         su $USER --pty -c "XAUTHORITY=$XDG_RUNTIME_DIR/distbox-X11 ${*: 2}"
 elif [ "$1" = "enter" ]; then
