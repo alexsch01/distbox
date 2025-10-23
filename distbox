@@ -27,7 +27,7 @@ if [ "$1" = "install" ]; then
 driver = "overlay"
 runroot = "$HOME/.config/containers/storage"' > $DISTBOX_PODMAN/.config/containers/storage.conf
 
-    ln -sf $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11-symlink
+    ln -sf $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11
 
     HOME=$DISTBOX_PODMAN podman create \
         --hostname $HOSTNAME \
@@ -82,7 +82,7 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_PODMAN/.config/containe
 elif [ "$1" = "run" ]; then
     cmp --silent $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11 || {
         echo y | distbox stop 1> /dev/null;
-        ln -sf $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11-symlink;
+        ln -sf $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11;
     }
 
     DISTBOX_OFFLINE=$(HOME=$DISTBOX_PODMAN podman exec my-distbox echo 2>&1)
