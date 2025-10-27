@@ -80,10 +80,10 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_PODMAN/.config/containe
     HOME=$DISTBOX_PODMAN podman exec my-distbox pkill dconf-service
     distbox run 'echo "exclude=*.i686" | sudo tee -a /etc/dnf/dnf.conf' > /dev/null
 elif [ "$1" = "run" ]; then
-    cmp --silent $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11 || {
-        echo y | distbox stop 1> /dev/null;
-        ln -sf $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11;
-    }
+    if [ "$(readlink -f $XDG_RUNTIME_DIR/distbox-X11)" != "$XAUTHORITY" ]; then
+        echo y | distbox stop 1> /dev/null
+        ln -sf $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11
+    fi
 
     DISTBOX_OFFLINE=$(HOME=$DISTBOX_PODMAN podman exec my-distbox echo 2>&1)
     HOME=$DISTBOX_PODMAN podman start my-distbox > /dev/null
