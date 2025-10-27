@@ -118,7 +118,7 @@ elif [ "$1" = "backup" ]; then
 
     echo y | distbox stop 1> /dev/null
     podman unshare rm -rf $DISTBOX_FILES@backup
-    podman unshare cp -R -a $DISTBOX_FILES $DISTBOX_FILES@backup
+    podman unshare cp -a $DISTBOX_FILES $DISTBOX_FILES@backup
 elif [ "$1" = "stop" ]; then
     read -r -p "Do you want to stop your distbox? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
