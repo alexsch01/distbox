@@ -6,6 +6,10 @@ DISTBOX_FILES=$HOME/distbox-files
 DISTBOX_PODMAN=$DISTBOX_FILES/podman-files
 DISTBOX_HOME=$DISTBOX_FILES/HOME
 
+if [[ ! -v XAUTHORITY ]]; then
+    XAUTHORITY=$HOME/.Xauthority
+fi
+
 dbus_setup() {
     HOME=$DISTBOX_PODMAN podman exec my-distbox rm -f /run/dbus/pid
     HOME=$DISTBOX_PODMAN podman exec my-distbox dbus-daemon --system
