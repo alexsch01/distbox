@@ -140,6 +140,7 @@ elif [ "$1" = "uninstall" ]; then
 
     podman unshare chown root: -R $DISTBOX_PODMAN/.local/share/containers/storage 2> /dev/null
     podman unshare rm -rf $DISTBOX_PODMAN 2> /dev/null
+    chmod -R +w $DISTBOX_FILES 2> /dev/null
     rm -rf $DISTBOX_FILES
 else
     echo $'Valid commands: \n'
