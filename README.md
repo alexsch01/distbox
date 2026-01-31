@@ -24,8 +24,6 @@ run your distbox - `distbox run COMMAND`
 
 enter your distbox (alias for distbox run bash) - `distbox enter`
 
-backup your distbox - `distbox backup`
-
 stop your distbox - `distbox stop`
 
 uninstall your distbox - `distbox uninstall`
