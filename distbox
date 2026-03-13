@@ -69,7 +69,6 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_PODMAN/.config/containe
             --pre-init-hooks '' \
             --additional-packages "google-noto-color-emoji-fonts google-noto-sans-mono-fonts google-noto-sans-symbols2-fonts \
                                    dbus-daemon libglvnd-gles gsettings-desktop-schemas dconf" -- '' || exit
-    HOME=$DISTBOX_PODMAN podman untag $DISTBOX_IMAGE
 
     HOME=$DISTBOX_PODMAN $HOME/.distbox-helpers/distrobox-enter my-distbox --no-workdir -- ''
     HOME=$DISTBOX_PODMAN podman exec my-distbox chown $USER: $XDG_RUNTIME_DIR
