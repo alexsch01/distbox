@@ -29,6 +29,7 @@ if [ "$1" = "install" ]; then
 
     echo '[storage]
 driver = "overlay"
+graphroot = "$HOME/.local/share/containers/storage"
 runroot = "$HOME/.config/containers/storage"' > $DISTBOX_PODMAN/.config/containers/storage.conf
 
     ln -sf $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11
