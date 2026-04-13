@@ -27,3 +27,8 @@ enter your distbox (alias for distbox run bash) - `distbox enter`
 stop your distbox - `distbox stop`
 
 uninstall your distbox - `distbox uninstall`
+
+---
+
+Uses [alexsch01/distbox-distrobox
+](https://github.com/alexsch01/distbox-distrobox)
