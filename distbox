@@ -57,7 +57,7 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_PODMAN/.config/containe
         --volume $XDG_RUNTIME_DIR/distbox-X11:$XDG_RUNTIME_DIR/distbox-X11:ro \
         --annotation run.oci.keep_original_groups=1 \
         --ulimit host \
-        --userns keep-id:size=65536 \
+        --userns keep-id \
         --entrypoint /usr/bin/entrypoint $DISTBOX_IMAGE \
             --verbose \
             --name $USER \
