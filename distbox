@@ -3,7 +3,7 @@
 DISTBOX_IMAGE=registry.fedoraproject.org/fedora-toolbox:latest
 
 DISTBOX_FILES=$HOME/distbox-files
-DISTBOX_PODMAN=$DISTBOX_FILES/podman-files
+DISTBOX_PODMAN_HOME=$DISTBOX_FILES/podman-files
 DISTBOX_HOME=$DISTBOX_FILES/HOME
 
 if [[ ! -v XAUTHORITY ]]; then
@@ -11,9 +11,9 @@ if [[ ! -v XAUTHORITY ]]; then
 fi
 
 dbus_setup() {
-    HOME=$DISTBOX_PODMAN podman exec my-distbox rm -f /run/dbus/pid
-    HOME=$DISTBOX_PODMAN podman exec my-distbox dbus-daemon --system
-    HOME=$DISTBOX_PODMAN podman exec --user=$USER my-distbox dbus-daemon --session --address=unix:path=$XDG_RUNTIME_DIR/bus 2> /dev/null &
+    HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox rm -f /run/dbus/pid
+    HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox dbus-daemon --system
+    HOME=$DISTBOX_PODMAN_HOME podman exec --user=$USER my-distbox dbus-daemon --session --address=unix:path=$XDG_RUNTIME_DIR/bus 2> /dev/null &
 }
 
 if [ "$1" = "install" ]; then
@@ -24,17 +24,17 @@ if [ "$1" = "install" ]; then
 
     echo y | distbox uninstall
 
-    mkdir -p $DISTBOX_PODMAN/.config/containers $DISTBOX_HOME
-    touch $DISTBOX_PODMAN/THERE_ARE_FILES_HERE
+    mkdir -p $DISTBOX_PODMAN_HOME/.config/containers $DISTBOX_HOME
+    touch $DISTBOX_PODMAN_HOME/THERE_ARE_FILES_HERE
 
     echo '[storage]
 driver = "overlay"
 graphroot = "$HOME/.local/share/containers/storage"
-runroot = "$HOME/.config/containers/storage"' > $DISTBOX_PODMAN/.config/containers/storage.conf
+runroot = "$HOME/.config/containers/storage"' > $DISTBOX_PODMAN_HOME/.config/containers/storage.conf
 
     ln -sf $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11
 
-    HOME=$DISTBOX_PODMAN podman create \
+    HOME=$DISTBOX_PODMAN_HOME podman create \
         --hostname $HOSTNAME \
         --name my-distbox \
         --privileged \
@@ -70,18 +70,18 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_PODMAN/.config/containe
             --additional-packages "google-noto-color-emoji-fonts google-noto-sans-mono-fonts google-noto-sans-symbols2-fonts \
                                    dbus-daemon libglvnd-gles gsettings-desktop-schemas dconf" -- '' || exit
 
-    HOME=$DISTBOX_PODMAN $HOME/.distbox-helpers/distrobox-enter my-distbox --no-workdir -- ''
-    HOME=$DISTBOX_PODMAN podman exec my-distbox chown $USER: $XDG_RUNTIME_DIR
+    HOME=$DISTBOX_PODMAN_HOME $HOME/.distbox-helpers/distrobox-enter my-distbox --no-workdir -- ''
+    HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox chown $USER: $XDG_RUNTIME_DIR
 
-    HOME=$DISTBOX_PODMAN podman exec my-distbox mkdir /run/dbus
+    HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox mkdir /run/dbus
     dbus_setup
-    HOME=$DISTBOX_PODMAN podman exec my-distbox rm -f /etc/machine-id
-    HOME=$DISTBOX_PODMAN podman exec my-distbox dbus-uuidgen --ensure=/etc/machine-id
+    HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox rm -f /etc/machine-id
+    HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox dbus-uuidgen --ensure=/etc/machine-id
 
-    HOME=$DISTBOX_PODMAN podman exec --user=$USER my-distbox cp /etc/skel/.bashrc $HOME
+    HOME=$DISTBOX_PODMAN_HOME podman exec --user=$USER my-distbox cp /etc/skel/.bashrc $HOME
 
     distbox run gsettings set org.gnome.desktop.wm.preferences button-layout ":minimize,maximize,close"
-    HOME=$DISTBOX_PODMAN podman exec my-distbox pkill dconf-service
+    HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox pkill dconf-service
     distbox run 'echo "exclude=*.i686" | sudo tee -a /etc/dnf/dnf.conf' > /dev/null
 elif [ "$1" = "run" ]; then
     if [ "$(readlink -f $XDG_RUNTIME_DIR/distbox-X11)" != "$XAUTHORITY" ]; then
@@ -89,13 +89,13 @@ elif [ "$1" = "run" ]; then
         ln -sf $XAUTHORITY $XDG_RUNTIME_DIR/distbox-X11
     fi
 
-    DISTBOX_OFFLINE=$(HOME=$DISTBOX_PODMAN podman exec my-distbox echo 2>&1)
-    HOME=$DISTBOX_PODMAN podman start my-distbox > /dev/null
+    DISTBOX_OFFLINE=$(HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox echo 2>&1)
+    HOME=$DISTBOX_PODMAN_HOME podman start my-distbox > /dev/null
     if [ "$DISTBOX_OFFLINE" == "Error: can only create exec sessions on running containers: container state improper" ]; then
         dbus_setup
     fi
 
-    HOME=$DISTBOX_PODMAN podman exec \
+    HOME=$DISTBOX_PODMAN_HOME podman exec \
         --interactive \
         --detach-keys= \
         --user=root \
@@ -120,7 +120,7 @@ elif [ "$1" = "stop" ]; then
         exit
     fi
 
-    HOME=$DISTBOX_PODMAN podman stop my-distbox
+    HOME=$DISTBOX_PODMAN_HOME podman stop my-distbox
 elif [ "$1" = "uninstall" ]; then
     read -r -p "Do you want to uninstall your distbox? [y/N] " response
     if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
@@ -129,8 +129,8 @@ elif [ "$1" = "uninstall" ]; then
 
     echo y | distbox stop 1> /dev/null 2> /dev/null
 
-    HOME=$DISTBOX_PODMAN podman unshare chown root: -R $DISTBOX_PODMAN/.local/share/containers/storage 2> /dev/null
-    HOME=$DISTBOX_PODMAN podman unshare rm -rf $DISTBOX_PODMAN 2> /dev/null
+    HOME=$DISTBOX_PODMAN_HOME podman unshare chown root: -R $DISTBOX_PODMAN_HOME/.local/share/containers/storage 2> /dev/null
+    HOME=$DISTBOX_PODMAN_HOME podman unshare rm -rf $DISTBOX_PODMAN_HOME 2> /dev/null
     chmod -R +w $DISTBOX_FILES 2> /dev/null
     rm -rf $DISTBOX_FILES
 else
