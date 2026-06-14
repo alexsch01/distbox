@@ -58,7 +58,8 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_PODMAN_HOME/.config/con
         --annotation run.oci.keep_original_groups=1 \
         --ulimit host \
         --userns keep-id \
-        --entrypoint /usr/bin/entrypoint $DISTBOX_IMAGE \
+        --entrypoint /usr/bin/entrypoint \
+        $DISTBOX_IMAGE \
             --verbose \
             --name $USER \
             --user $(id -u) \
