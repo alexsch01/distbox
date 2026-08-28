@@ -22,9 +22,7 @@ dbus_setup() {
 
     HOME=$DISTBOX_PODMAN_HOME podman exec \
         --user=$USER \
-        --env DISPLAY=$DISPLAY \
         --env XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR \
-        --env WAYLAND_DISPLAY=$WAYLAND_DISPLAY \
         my-distbox \
         dbus-update-activation-environment XDG_RUNTIME_DIR
 }
