@@ -14,6 +14,7 @@ dbus_setup() {
     HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox rm -f /run/dbus/pid
     HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox dbus-daemon --system
     HOME=$DISTBOX_PODMAN_HOME podman exec --user=$USER my-distbox dbus-daemon --session --address=unix:path=$XDG_RUNTIME_DIR/bus 2> /dev/null &
+    HOME=$DISTBOX_PODMAN_HOME podman exec --user=$USER my-distbox dbus-update-activation-environment XDG_RUNTIME_DIR
 }
 
 if [ "$1" = "install" ]; then
