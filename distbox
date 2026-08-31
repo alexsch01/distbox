@@ -84,7 +84,12 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_PODMAN_HOME/.config/con
     HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox bash -c 'echo "export PS1=\"📦[\u@my-distbox \W]# \"" >> /root/.bashrc'
     HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox chsh -s /bin/bash $USER > /dev/null
 
-    distbox run gsettings set org.gnome.desktop.wm.preferences button-layout ":minimize,maximize,close"
+    HOME=$DISTBOX_PODMAN_HOME podman exec \
+        --user=$USER \
+        --env XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR \
+        my-distbox \
+        gsettings set org.gnome.desktop.wm.preferences button-layout ":minimize,maximize,close"
+
     HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox pkill dconf-service
     HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox bash -c 'echo "exclude=*.i686" >> /etc/dnf/dnf.conf'
 elif [ "$1" = "run" ]; then
