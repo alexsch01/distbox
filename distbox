@@ -120,7 +120,7 @@ elif [ "$1" = "enter" ]; then
     distbox run bash
 elif [ "$1" = "stop" ]; then
     read -r -p "Do you want to stop your distbox? [y/N] " response
-    f ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+    if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
         exit
     fi
 
