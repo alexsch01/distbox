@@ -80,8 +80,6 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_PODMAN_HOME/.config/con
     HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox dbus-uuidgen --ensure=/etc/machine-id
 
     HOME=$DISTBOX_PODMAN_HOME podman exec --user=$USER my-distbox cp /etc/skel/.bashrc $HOME
-    HOME=$DISTBOX_PODMAN_HOME podman exec --user=$USER my-distbox bash -c 'echo "export PS1=\"📦[\u@my-distbox \W]\$ \"" >> $HOME/.bashrc'
-    HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox bash -c 'echo "export PS1=\"📦[\u@my-distbox \W]# \"" >> /root/.bashrc'
     HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox chsh -s /bin/bash $USER > /dev/null
 
     HOME=$DISTBOX_PODMAN_HOME podman exec \
@@ -120,7 +118,7 @@ elif [ "$1" = "run" ]; then
         --env DBUS_SESSION_BUS_ADDRESS=unix:path=$XDG_RUNTIME_DIR/bus \
         --env WAYLAND_DISPLAY=$WAYLAND_DISPLAY \
     my-distbox \
-        su --pty $USER -c "XAUTHORITY=$XDG_RUNTIME_DIR/distbox-X11 ${*: 2}"
+        su --pty $USER -c "XAUTHORITY=$XDG_RUNTIME_DIR/distbox-X11 PS1=\"📦[\u@my-distbox \W]$ \" ${*: 2}"
 elif [ "$1" = "enter" ]; then
     distbox run bash
 elif [ "$1" = "stop" ]; then
