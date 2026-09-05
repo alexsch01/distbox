@@ -70,6 +70,7 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_PODMAN_HOME/.config/con
 
     HOME=$DISTBOX_PODMAN_HOME podman start my-distbox
     HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox bash -c 'echo "$USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$USER && chmod 0440 /etc/sudoers.d/$USER'
+    HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox usermod -s /bin/bash $USER
 
     HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox dnf install -y google-noto-color-emoji-fonts google-noto-sans-mono-fonts google-noto-sans-symbols2-fonts \
         dbus-daemon libglvnd-gles gsettings-desktop-schemas dconf || exit
@@ -82,7 +83,6 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_PODMAN_HOME/.config/con
     HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox dbus-uuidgen --ensure=/etc/machine-id
 
     HOME=$DISTBOX_PODMAN_HOME podman exec --user=$USER my-distbox cp /etc/skel/.bashrc $HOME
-    HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox usermod -s /bin/bash $USER
 
     HOME=$DISTBOX_PODMAN_HOME podman exec \
         --user=$USER \
