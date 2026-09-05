@@ -65,10 +65,12 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_PODMAN_HOME/.config/con
         --annotation run.oci.keep_original_groups=1 \
         --ulimit host \
         --userns keep-id \
-        --entrypoint '["/bin/sh", "-c", "test -f /etc/sudoers.d/$USER || (echo \"$USER ALL=(ALL) NOPASSWD: ALL\" > /etc/sudoers.d/$USER && chmod 0440 /etc/sudoers.d/$USER); trap \"exit 0\" TERM; sleep infinity & wait"]' \
+        --entrypoint '["/bin/sh", "-c", "trap \"exit 0\" TERM; sleep infinity & wait"]' \
         $DISTBOX_IMAGE || exit
 
     HOME=$DISTBOX_PODMAN_HOME podman start my-distbox
+    HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox bash -c 'echo "$USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$USER && chmod 0440 /etc/sudoers.d/$USER'
+
     HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox dnf install -y google-noto-color-emoji-fonts google-noto-sans-mono-fonts google-noto-sans-symbols2-fonts \
         dbus-daemon libglvnd-gles gsettings-desktop-schemas dconf || exit
 
