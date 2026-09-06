@@ -72,6 +72,8 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_PODMAN_HOME/.config/con
     HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox bash -c 'echo "$USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$USER && chmod 0440 /etc/sudoers.d/$USER'
     HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox usermod -s /bin/bash $USER
 
+    HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox bash -c 'echo "export PS1=\"📦[\u@my-distbox \W]\$ \"" > /etc/profile.d/distbox-PS1.sh'
+
     HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox dnf install -y google-noto-color-emoji-fonts google-noto-sans-mono-fonts google-noto-sans-symbols2-fonts \
         dbus-daemon libglvnd-gles gsettings-desktop-schemas dconf || exit
 
@@ -120,7 +122,7 @@ elif [ "$1" = "run" ]; then
         --env DBUS_SESSION_BUS_ADDRESS=unix:path=$XDG_RUNTIME_DIR/bus \
         --env WAYLAND_DISPLAY=$WAYLAND_DISPLAY \
     my-distbox \
-        su --pty $USER -c "XAUTHORITY=$XDG_RUNTIME_DIR/distbox-X11 PS1=\"📦[\u@my-distbox \W]\$ \" ${*: 2}"
+        su --pty $USER -c "XAUTHORITY=$XDG_RUNTIME_DIR/distbox-X11 ${*: 2}"
 elif [ "$1" = "enter" ]; then
     distbox run bash
 elif [ "$1" = "stop" ]; then
