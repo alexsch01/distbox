@@ -72,7 +72,7 @@ runroot = "$HOME/.config/containers/storage"' > $DISTBOX_PODMAN_HOME/.config/con
     HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox bash -c 'echo "$USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$USER && chmod 0440 /etc/sudoers.d/$USER'
     HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox usermod -s /bin/bash $USER
 
-    HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox bash -c 'echo "if [ "\$UID" -eq 0 ]; then export PS1=\"📦[\u@my-distbox \W]# \"; else export PS1=\"📦[\u@my-distbox \W]\$ \"; fi" > /etc/profile.d/distbox-PS1.sh'
+    HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox bash -c 'echo "export PS1='\''📦[\u@my-distbox \W]\\$ '\''" > /etc/profile.d/distbox-PS1.sh'
 
     HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox dnf install -y google-noto-color-emoji-fonts google-noto-sans-mono-fonts google-noto-sans-symbols2-fonts \
         dbus-daemon libglvnd-gles gsettings-desktop-schemas dconf || exit
