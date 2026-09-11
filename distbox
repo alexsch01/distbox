@@ -102,8 +102,10 @@ elif [ "$1" = "run" ]; then
 
     DISTBOX_OFFLINE=$(HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox echo 2>&1)
     if [ "$DISTBOX_OFFLINE" == "Error: can only create exec sessions on running containers: container state improper" ]; then
-        HOME=$DISTBOX_PODMAN_HOME podman start my-distbox > /dev/null
-        dbus_setup
+        DISTBOX_OFFLINE=$(HOME=$DISTBOX_PODMAN_HOME podman start my-distbox 2>&1)
+        if [[ ! "$DISTBOX_OFFLINE" == *"unable to find user root:"* ]]; then
+            dbus_setup
+        fi
     fi
 
     HOME=$DISTBOX_PODMAN_HOME podman exec \
