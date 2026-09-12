@@ -16,9 +16,7 @@ dbus_setup() {
     HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox dbus-daemon --system
     HOME=$DISTBOX_PODMAN_HOME podman exec --user=$USER my-distbox dbus-daemon --session --address=unix:path=$XDG_RUNTIME_DIR/bus 2> /dev/null &
 
-    until HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox test -S $XDG_RUNTIME_DIR/bus; do
-        sleep 1
-    done
+    HOME=$DISTBOX_PODMAN_HOME podman exec my-distbox bash -c "until test -S $XDG_RUNTIME_DIR/bus; do sleep 1; done"
 
     HOME=$DISTBOX_PODMAN_HOME podman exec \
         --user=$USER \
